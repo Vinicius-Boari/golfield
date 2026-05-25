@@ -305,9 +305,10 @@ function DashboardContent({
 
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState<Record<string, string>>({});
-  const [dateField, setDateField] = useState<string>("ENVIO DO P");
-  const [dateFrom, setDateFrom] = useState<string>("");
-  const [dateTo, setDateTo] = useState<string>("");
+  const [dateFromEntrada, setDateFromEntrada] = useState<string>("");
+  const [dateToEntrada, setDateToEntrada] = useState<string>("");
+  const [dateFromSaida, setDateFromSaida] = useState<string>("");
+  const [dateToSaida, setDateToSaida] = useState<string>("");
   const [page, setPage] = useState(1);
   const [pageSize] = useState(15);
   const [sortKey, setSortKey] = useState<string | null>(null);
