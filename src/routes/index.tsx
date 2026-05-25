@@ -104,9 +104,21 @@ function LoginPage({ onLogin }: { onLogin: () => void }) {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (username === "golfield" && password === "631525") {
-      const expiry = new Date().getTime() + 24 * 60 * 60 * 1000;
+      // Get current time in Brasília (UTC-3)
+      const now = new Date();
+      const brasiliaOffset = -3;
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const brTime = new Date(utc + (3600000 * brasiliaOffset));
+      
+      // Set expiry to 00:00 of the next day in Brasília
+      const expiry = new Date(brTime);
+      expiry.setHours(24, 0, 0, 0);
+      
+      // Convert back to UTC timestamp for consistent comparison
+      const expiryTimestamp = expiry.getTime() - (3600000 * brasiliaOffset);
+      
       localStorage.setItem("auth_token", "authorized");
-      localStorage.setItem("auth_expiry", expiry.toString());
+      localStorage.setItem("auth_expiry", expiryTimestamp.toString());
       onLogin();
     } else {
       setError("Credenciais inválidas");
