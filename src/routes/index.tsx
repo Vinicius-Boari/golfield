@@ -236,8 +236,6 @@ function DashboardPage() {
 
   const current = activeSheet ?? availableSheets[availableSheets.length - 1]?.title ?? sheetsQuery.data?.sheets[sheetsQuery.data.sheets.length - 1]?.title ?? null;
 
-  const current = activeSheet ?? availableSheets[availableSheets.length - 1]?.title ?? sheetsQuery.data?.sheets[sheetsQuery.data.sheets.length - 1]?.title ?? null;
-
   return (
     <div className="min-h-screen bg-background text-foreground ambient-bg">
       <div className="flex">
@@ -262,19 +260,6 @@ function DashboardPage() {
                 Erro ao conectar: {(sheetsQuery.error as Error).message}
               </div>
             ) : current ? (
-              <SheetDashboard sheetTitle={current} />
-            ) : (
-              <div className="text-muted-foreground text-sm flex items-center gap-2">
-                <RefreshCw className="h-4 w-4 animate-spin" />
-                Carregando planilhas…
-              </div>
-            )}
-          </main>
-        </div>
-      </div>
-    </div>
-  );
-}
               <SheetDashboard sheetTitle={current} />
             ) : (
               <div className="text-muted-foreground text-sm flex items-center gap-2">
