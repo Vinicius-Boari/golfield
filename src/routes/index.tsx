@@ -104,7 +104,9 @@ function LoginPage({ onLogin }: { onLogin: () => void }) {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (username === "golfield" && password === "631525") {
-      sessionStorage.setItem("auth_token", "authorized");
+      const expiry = new Date().getTime() + 24 * 60 * 60 * 1000;
+      localStorage.setItem("auth_token", "authorized");
+      localStorage.setItem("auth_expiry", expiry.toString());
       onLogin();
     } else {
       setError("Credenciais inválidas");
@@ -184,7 +186,16 @@ function LoginPage({ onLogin }: { onLogin: () => void }) {
 
 function DashboardPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return sessionStorage.getItem("auth_token") === "authorized";
+    const token = localStorage.getItem("auth_token");
+    const expiry = localStorage.getItem("auth_expiry");
+    if (token === "authorized" && expiry) {
+      if (new Date().getTime() < parseInt(expiry)) {
+        return true;
+      }
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("auth_expiry");
+    }
+    return false;
   });
 
   const sheetsQuery = useQuery({
