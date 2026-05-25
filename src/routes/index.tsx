@@ -483,7 +483,7 @@ function DashboardContent({
       {/* Filters + Table */}
       <div className="glass rounded-2xl p-4 md:p-6 shadow-xl shadow-black/5">
 
-        <div className="flex flex-wrap items-center gap-2 mb-3">
+        <div className="flex flex-wrap items-center gap-2 mb-4">
           <Button
             size="sm"
             variant={showOnlyEnvio ? "default" : "outline"}
@@ -491,7 +491,7 @@ function DashboardContent({
               setShowOnlyEnvio(!showOnlyEnvio);
               setPage(1);
             }}
-            className={cn("h-8", showOnlyEnvio && "bg-blue-600 hover:bg-blue-700")}
+            className={cn("h-8 px-4", showOnlyEnvio && "bg-blue-600 hover:bg-blue-700")}
           >
             Data de Envio
           </Button>
@@ -502,7 +502,7 @@ function DashboardContent({
               setShowOnlyNF(!showOnlyNF);
               setPage(1);
             }}
-            className={cn("h-8", showOnlyNF && "bg-indigo-600 hover:bg-indigo-700")}
+            className={cn("h-8 px-4", showOnlyNF && "bg-indigo-600 hover:bg-indigo-700")}
           >
             Com NF
           </Button>
@@ -517,9 +517,21 @@ function DashboardContent({
           >
             <Download className="h-3.5 w-3.5 mr-1" /> CSV
           </Button>
-          <Badge variant="secondary" className="ml-auto">
-            {filtered.length.toLocaleString("pt-BR")} de {validRows.length.toLocaleString("pt-BR")} registros
-          </Badge>
+
+          <div className="ml-auto flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-2 text-[11px] text-muted-foreground">
+              <RefreshCw className={cn("h-3 w-3", isFetching && "animate-spin")} />
+              <span>
+                Sincronizado {new Date(lastUpdated).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
+              </span>
+            </div>
+            <Button size="sm" variant="ghost" onClick={refetch} className="h-8 w-8 p-0">
+              <RefreshCw className={cn("h-4 w-4", isFetching && "animate-spin")} />
+            </Button>
+            <Badge variant="secondary" className="font-medium whitespace-nowrap">
+              {filtered.length.toLocaleString("pt-BR")} registros
+            </Badge>
+          </div>
         </div>
 
         <div className="rounded-xl border bg-card overflow-hidden">
