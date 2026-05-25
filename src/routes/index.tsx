@@ -374,7 +374,7 @@ function DashboardContent({
   const pieCol = cols.categoricalCols[1] ?? cols.categoricalCols[0];
   const barData = barCol ? countBy(filtered, barCol, 8) : [];
   const pieData = pieCol ? countBy(filtered, pieCol, 6) : [];
-  const lineData = dateField ? timeSeries(filtered, dateField) : [];
+  const lineData = dateField ? timeSeries(filtered, dateField, sumCol) : [];
 
   // Pagination
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
@@ -502,7 +502,7 @@ function DashboardContent({
           )}
         </ChartCard>
 
-        <ChartCard title="Evolução temporal" subtitle={dateField || "Sem data detectada"} className="lg:col-span-3">
+        <ChartCard title="Evolução temporal" subtitle={dateField ? `Baseado em ${dateField} ${sumCol ? `(Soma de ${sumCol})` : "(Contagem)"}` : "Sem data detectada"} className="lg:col-span-3">
           {lineData.length ? (
             <ResponsiveContainer width="100%" height={260}>
               <AreaChart data={lineData} margin={{ top: 10, right: 16, left: -10, bottom: 0 }}>
@@ -516,6 +516,12 @@ function DashboardContent({
                 <XAxis dataKey="date" tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} />
                 <YAxis tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} />
                 <Tooltip
+                  formatter={(val: number) => [
+                    sumCol && /valor|preco|total|receita/i.test(sumCol)
+                      ? `R$ ${val.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`
+                      : val.toLocaleString("pt-BR"),
+                    sumCol || "Quantidade",
+                  ]}
                   contentStyle={{
                     background: "var(--popover)",
                     border: "1px solid var(--border)",
@@ -525,10 +531,11 @@ function DashboardContent({
                 />
                 <Area
                   type="monotone"
-                  dataKey="count"
+                  dataKey="value"
                   stroke="oklch(0.62 0.22 264)"
                   strokeWidth={2}
                   fill="url(#areaGrad)"
+                  animationDuration={1000}
                 />
               </AreaChart>
             </ResponsiveContainer>

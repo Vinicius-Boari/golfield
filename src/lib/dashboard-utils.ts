@@ -66,17 +66,40 @@ export function countBy(rows: Record<string, string>[], col: string, top = 8) {
     .map(([name, value]) => ({ name, value }));
 }
 
-export function timeSeries(rows: Record<string, string>[], dateCol: string) {
+export function timeSeries(rows: Record<string, string>[], dateCol: string, numericCol?: string) {
   const map = new Map<string, number>();
   for (const r of rows) {
     const d = parseDate(r[dateCol] ?? "");
     if (!d) continue;
     const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-    map.set(key, (map.get(key) ?? 0) + 1);
+    const val = numericCol ? toNumber(r[numericCol]) : 1;
+    map.set(key, (map.get(key) ?? 0) + val);
   }
-  return [...map.entries()]
-    .sort(([a], [b]) => (a < b ? -1 : 1))
-    .map(([date, count]) => ({ date, count }));
+
+  // Sort by date key
+  const sorted = [...map.entries()].sort(([a], [b]) => (a < b ? -1 : 1));
+
+  // Fill gaps (optional but better for charts)
+  if (sorted.length > 2) {
+    const filled: { date: string; value: number }[] = [];
+    const firstDate = new Date(sorted[0][0]);
+    const lastDate = new Date(sorted[sorted.length - 1][0]);
+
+    for (let d = new Date(firstDate); d <= lastDate; d.setDate(d.getDate() + 1)) {
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      const displayDate = d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
+      filled.push({
+        date: displayDate,
+        value: map.get(key) ?? 0,
+      });
+    }
+    return filled;
+  }
+
+  return sorted.map(([date, value]) => {
+    const [y, m, d] = date.split("-");
+    return { date: `${d}/${m}`, value };
+  });
 }
 
 export function downloadCSV(filename: string, headers: string[], rows: Record<string, string>[]) {
