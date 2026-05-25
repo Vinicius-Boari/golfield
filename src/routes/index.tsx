@@ -483,17 +483,22 @@ function DashboardContent({
       {/* Filters + Table */}
       <div className="glass rounded-2xl p-4 md:p-6 shadow-xl shadow-black/5">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
-          <div className="relative lg:col-span-2">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Pesquisar em tudo..."
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-              className="pl-9 h-10 rounded-xl border-muted-foreground/20 focus:ring-primary/20"
-            />
+          <div className="flex flex-col gap-1.5 lg:col-span-2">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-1">
+              Data Entrada
+            </label>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Pesquisar em tudo..."
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setPage(1);
+                }}
+                className="pl-9 h-10 rounded-xl border-muted-foreground/20 focus:ring-primary/20"
+              />
+            </div>
           </div>
 
           {["Liberado", "Impresso", "Envio", "R.Separação", "Conferencia", "Entregador"].map((colName) => {
