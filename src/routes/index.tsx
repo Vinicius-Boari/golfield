@@ -380,21 +380,7 @@ function Sidebar({
   );
 }
 
-function Header({ 
-  onMenu, 
-  sheetTitle, 
-  isSheetMode, 
-  onToggleMode, 
-  gid 
-}: { 
-  onMenu: () => void; 
-  sheetTitle: string | null;
-  isSheetMode: boolean;
-  onToggleMode: () => void;
-  gid?: number;
-}) {
-  const editUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/edit${gid !== undefined ? `#gid=${gid}` : ''}`;
-
+function Header({ onMenu, sheetTitle }: { onMenu: () => void; sheetTitle: string | null }) {
   return (
     <header className="sticky top-0 z-30 glass border-b">
       <div className="flex items-center gap-3 px-4 md:px-8 h-16">
@@ -404,35 +390,13 @@ function Header({
         <div className="flex items-center gap-2 min-w-0">
           <LayoutDashboard className="h-4 w-4 text-muted-foreground shrink-0" />
           <h1 className="font-semibold tracking-tight truncate">
-            {isSheetMode ? "Modo Edição" : (sheetTitle?.trim() ?? "Painel")}
+            {sheetTitle?.trim() ?? "Painel"}
           </h1>
-          {!isSheetMode && (
-            <Badge variant="secondary" className="hidden sm:inline-flex ml-2 text-[10px] font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-none">
-              <Activity className="h-3 w-3 mr-1" /> Sincronizado
-            </Badge>
-          )}
+          <Badge variant="secondary" className="hidden sm:inline-flex ml-2 text-[10px] font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-none">
+            <Activity className="h-3 w-3 mr-1" /> Sincronizado
+          </Badge>
         </div>
         <div className="ml-auto flex items-center gap-1.5">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={onToggleMode}
-            className={cn(
-              "gap-2 px-3 h-9 rounded-xl transition-all", 
-              isSheetMode ? "bg-cyan-500/10 text-cyan-600 border border-cyan-500/20" : "hover:bg-muted"
-            )}
-          >
-            <Table className="h-4 w-4" />
-            <span className="hidden sm:inline font-medium">{isSheetMode ? "Voltar ao Dashboard" : "Editar Planilha"}</span>
-          </Button>
-          
-          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl" asChild title="Abrir em nova guia">
-            <a href={editUrl} target="_blank" rel="noopener noreferrer">
-              <ExternalLink className="h-4 w-4" />
-            </a>
-          </Button>
-          
-          <div className="w-px h-4 bg-border mx-1 hidden sm:block" />
           <ThemeToggle />
         </div>
       </div>
