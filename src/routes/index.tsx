@@ -493,7 +493,7 @@ function DashboardContent({
     setDateToSaida("");
     setPage(1);
     setShowOnlyEnvio(false);
-    setShowOnlyNF(false);
+    
   };
 
   return (
