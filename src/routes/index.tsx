@@ -183,12 +183,12 @@ function Sidebar({
       >
         <div className="flex items-center justify-between px-6 py-5 border-b">
           <div className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-[oklch(0.62_0.22_264)] to-[oklch(0.7_0.2_200)] flex items-center justify-center text-white shadow-lg shadow-[oklch(0.62_0.22_264)]/20">
-              <Sparkles className="h-4 w-4" />
+            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white shadow-lg shadow-orange-500/20">
+              <Database className="h-4 w-4" />
             </div>
             <div>
-              <div className="font-semibold tracking-tight text-sm">Pulse BI</div>
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Live Dashboard</div>
+              <div className="font-bold tracking-tight text-sm text-foreground">GolField</div>
+              <div className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">DashBoard</div>
             </div>
           </div>
           <button
