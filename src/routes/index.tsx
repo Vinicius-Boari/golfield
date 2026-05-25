@@ -781,14 +781,6 @@ function DashboardContent({
           <Button
             size="sm"
             variant="outline"
-            onClick={() => downloadCSV(`${sheetTitle.trim()}.csv`, headers, filtered)}
-            className="h-8 px-4 rounded-lg border-muted-foreground/20 hover:bg-muted"
-          >
-            <Download className="h-3.5 w-3.5 mr-1" /> CSV
-          </Button>
-          <Button
-            size="sm"
-            variant="outline"
             onClick={() => window.print()}
             className="h-8 px-4 rounded-lg border-muted-foreground/20 hover:bg-muted bg-primary/5 text-primary hover:text-primary hover:bg-primary/10"
           >
