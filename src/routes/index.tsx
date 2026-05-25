@@ -595,7 +595,7 @@ function DashboardContent({
                   setDateFromEntrada(e.target.value);
                   setPage(1);
                 }}
-                className="h-10 rounded-xl border-muted-foreground/20 bg-white/90 text-black focus:bg-white"
+                className="h-10 rounded-xl border-muted-foreground/20"
               />
               <Input
                 type="date"
@@ -604,7 +604,7 @@ function DashboardContent({
                   setDateToEntrada(e.target.value);
                   setPage(1);
                 }}
-                className="h-10 rounded-xl border-muted-foreground/20 bg-white/90 text-black focus:bg-white"
+                className="h-10 rounded-xl border-muted-foreground/20"
               />
             </div>
           </div>
@@ -621,7 +621,7 @@ function DashboardContent({
                   setDateFromSaida(e.target.value);
                   setPage(1);
                 }}
-                className="h-10 rounded-xl border-muted-foreground/20 bg-white/90 text-black focus:bg-white"
+                className="h-10 rounded-xl border-muted-foreground/20"
               />
               <Input
                 type="date"
@@ -630,7 +630,7 @@ function DashboardContent({
                   setDateToSaida(e.target.value);
                   setPage(1);
                 }}
-                className="h-10 rounded-xl border-muted-foreground/20 bg-white/90 text-black focus:bg-white"
+                className="h-10 rounded-xl border-muted-foreground/20"
               />
             </div>
           </div>
