@@ -39,11 +39,10 @@ async function fetchWithRetry(url: string, label: string, attempts = 4): Promise
 export type SheetMeta = { id: number; title: string; rowCount: number };
 
 export const listSheets = createServerFn({ method: "GET" }).handler(async () => {
-  const res = await fetch(
+  const res = await fetchWithRetry(
     `${GATEWAY}/spreadsheets/${SPREADSHEET_ID}?fields=sheets.properties,properties.title`,
-    { headers: headers() },
+    "Sheets list",
   );
-  if (!res.ok) throw new Error(`Sheets list failed ${res.status}: ${await res.text()}`);
   const j: any = await res.json();
   const sheets: SheetMeta[] = (j.sheets ?? []).map((s: any) => ({
     id: s.properties.sheetId,
