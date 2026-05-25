@@ -37,6 +37,7 @@ import {
   ArrowUpRight,
   Menu,
   X,
+  Box,
 } from "lucide-react";
 
 import { getSheetData, listSheets } from "@/lib/sheets.functions";
@@ -500,7 +501,7 @@ function DashboardContent({
         <KpiCard
           label="Entregue"
           value={countOk.toLocaleString("pt-BR")}
-          icon={<CheckCircle2 className="h-4 w-4" />}
+          icon={<Box className="h-4 w-4" />}
           accent="from-blue-500 to-indigo-400"
         />
       </div>
