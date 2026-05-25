@@ -392,10 +392,10 @@ function DashboardContent({
     if (dateFromSaida || dateToSaida) {
       const from = dateFromSaida ? new Date(dateFromSaida) : null;
       const to = dateToSaida ? new Date(dateToSaida) : null;
-      const header = headers.find(h => h.toUpperCase().trim() === "DATA SAIDA");
-      if (header) {
+      const headerSaida = headers.find(h => h.toUpperCase().trim() === "DATA SAIDA");
+      if (headerSaida) {
         r = r.filter((row) => {
-          const d = parseDate(row[header] ?? "");
+          const d = parseDate(row[headerSaida] ?? "");
           if (!d) return false;
           if (from && d < from) return false;
           if (to && d > to) return false;
