@@ -913,25 +913,15 @@ function DashboardContent({
               </thead>
               <tbody>
                 <AnimatePresence initial={false}>
-                  {(isPrintingAll || isGeneratingPdf || window.matchMedia('print').matches ? ((isPrintingAll || isGeneratingPdf) ? filtered : pageRows) : pageRows).map((row, idx) => {
-                    const statusEntry = Object.entries(row).find(([h]) => /status|pendente|situac/i.test(h));
-                    const statusVal = (statusEntry?.[1] ?? "").toLowerCase();
-                    const dateEntry = Object.entries(row).find(([h]) => /data|entrada|pedido/i.test(h));
-                    const dateObj = parseDate(dateEntry?.[1] ?? "");
-                    const isOverdue = !!dateObj && (Date.now() - dateObj.getTime() > 24 * 60 * 60 * 1000) && (statusVal.includes("pendente") || statusVal.includes("atrasad"));
-
-                    return (
-                      <motion.tr
-                        key={`${safePage}-${idx}`}
-                        initial={{ opacity: 0, y: 4 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.15, delay: idx * 0.01 }}
-                        className={cn(
-                          "border-t hover:bg-muted/30 transition-colors",
-                          isOverdue && "bg-destructive/10 dark:bg-destructive/20 border-l-4 border-l-destructive"
-                        )}
-                      >
+                  {(isPrintingAll || isGeneratingPdf || window.matchMedia('print').matches ? ((isPrintingAll || isGeneratingPdf) ? filtered : pageRows) : pageRows).map((row, idx) => (
+                    <motion.tr
+                      key={`${safePage}-${idx}`}
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.15, delay: idx * 0.01 }}
+                      className="border-t hover:bg-muted/30 transition-colors"
+                    >
                         {headers.map((h) => {
                           const v = row[h] ?? "";
                           return (
@@ -940,9 +930,8 @@ function DashboardContent({
                             </td>
                           );
                         })}
-                      </motion.tr>
-                    );
-                  })}
+                    </motion.tr>
+                  ))}
                 </AnimatePresence>
                 {pageRows.length === 0 && (
                   <tr>
