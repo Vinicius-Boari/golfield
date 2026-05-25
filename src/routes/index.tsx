@@ -73,7 +73,7 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Painel de Vendas — Sincronizado com Google Sheets" },
+      { title: "Painel de Vendas" },
       {
         name: "description",
         content:
