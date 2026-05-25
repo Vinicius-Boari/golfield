@@ -832,7 +832,7 @@ function DashboardContent({
               </thead>
               <tbody>
                 <AnimatePresence initial={false}>
-                  {pageRows.map((row, idx) => (
+                  {(window.matchMedia('print').matches ? filtered : pageRows).map((row, idx) => (
                     <motion.tr
                       key={`${safePage}-${idx}`}
                       initial={{ opacity: 0, y: 4 }}
