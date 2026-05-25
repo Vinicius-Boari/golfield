@@ -140,5 +140,32 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: color-mix(in oklab, var(--card) 70%, transparent);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+  }
+  .gradient-text {
+    background: linear-gradient(135deg, oklch(0.62 0.22 264), oklch(0.7 0.2 200));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar { width: 8px; height: 8px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: color-mix(in oklab, var(--muted-foreground) 30%, transparent);
+    border-radius: 999px;
+  }
+  .ambient-bg {
+    background-image:
+      radial-gradient(circle at 15% 0%, color-mix(in oklab, oklch(0.62 0.22 264) 18%, transparent), transparent 45%),
+      radial-gradient(circle at 85% 10%, color-mix(in oklab, oklch(0.7 0.2 200) 14%, transparent), transparent 50%);
   }
 }
