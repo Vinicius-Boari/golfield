@@ -305,7 +305,7 @@ function DashboardContent({
 
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState<Record<string, string>>({});
-  const [dateField, setDateField] = useState<string>(cols.dateCols[0] ?? "");
+  const [dateField, setDateField] = useState<string>("ENVIO DO P");
   const [dateFrom, setDateFrom] = useState<string>("");
   const [dateTo, setDateTo] = useState<string>("");
   const [page, setPage] = useState(1);
@@ -543,13 +543,23 @@ function DashboardContent({
               <Input
                 type="date"
                 value={dateFrom}
-                onChange={(e) => setDateFrom(e.target.value)}
+                onChange={(e) => {
+                  setDateFrom(e.target.value);
+                  setPage(1);
+                  const h = headers.find(h => h.toUpperCase().trim() === "ENVIO DO P");
+                  if (h) setDateField(h);
+                }}
                 className="h-10 rounded-xl border-muted-foreground/20"
               />
               <Input
                 type="date"
                 value={dateTo}
-                onChange={(e) => setDateTo(e.target.value)}
+                onChange={(e) => {
+                  setDateTo(e.target.value);
+                  setPage(1);
+                  const h = headers.find(h => h.toUpperCase().trim() === "ENVIO DO P");
+                  if (h) setDateField(h);
+                }}
                 className="h-10 rounded-xl border-muted-foreground/20"
               />
             </div>
