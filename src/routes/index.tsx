@@ -95,18 +95,28 @@ const CHART_COLORS = [
 const ALLOWED_IP = "35.233.82.85"; // Substitua pelo seu IP se necessário
 
 function NetworkGuard({ children }: { children: React.ReactNode }) {
+  const [loading, setLoading] = useState(() => {
+    // Check if we already authorized this IP in this session
+    return sessionStorage.getItem("network_authorized") !== "true";
+  });
+  const [isAuthorized, setIsAuthorized] = useState(() => {
+    return sessionStorage.getItem("network_authorized") === "true";
+  });
   const [userIp, setUserIp] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
+    if (isAuthorized) return;
+
     async function checkIp() {
       try {
         const response = await fetch("https://api.ipify.org?format=json");
         const data = await response.json();
         setUserIp(data.ip);
-        // Em um cenário real, você pode querer permitir múltiplos IPs ou uma faixa
-        setIsAuthorized(data.ip === ALLOWED_IP);
+        
+        if (data.ip === ALLOWED_IP) {
+          setIsAuthorized(true);
+          sessionStorage.setItem("network_authorized", "true");
+        }
       } catch (error) {
         console.error("Erro ao verificar IP:", error);
       } finally {
@@ -114,7 +124,7 @@ function NetworkGuard({ children }: { children: React.ReactNode }) {
       }
     }
     checkIp();
-  }, []);
+  }, [isAuthorized]);
 
   if (loading) {
     return (
