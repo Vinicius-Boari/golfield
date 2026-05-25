@@ -460,7 +460,39 @@ function DashboardContent({
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [showOnlyEnvio, setShowOnlyEnvio] = useState(false);
   const [isPrintingAll, setIsPrintingAll] = useState(false);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [showPrintOptions, setShowPrintOptions] = useState(false);
+  const [showPdfOptions, setShowPdfOptions] = useState(false);
+  const reportRef = useRef<HTMLDivElement>(null);
+
+  const handleDownloadPdf = async (all: boolean) => {
+    if (all) setIsGeneratingPdf(true);
+    setShowPdfOptions(false);
+    
+    // Wait for state update and re-render
+    setTimeout(async () => {
+      const element = reportRef.current;
+      if (!element) return;
+
+      const opt = {
+        margin: [10, 5],
+        filename: `relatorio-${sheetTitle.toLowerCase().replace(/\s+/g, '-')}-${new Date().toLocaleDateString('pt-BR')}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+          scale: 2, 
+          useCORS: true,
+          letterRendering: true,
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+      };
+
+      try {
+        await html2pdf().set(opt).from(element).save();
+      } finally {
+        setIsGeneratingPdf(false);
+      }
+    }, 500);
+  };
   
 
   const validRows = useMemo(() => {
