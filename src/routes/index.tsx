@@ -388,11 +388,16 @@ function DashboardContent({
     : null;
   
   const statusCol = headers.find((h) => /status|ok|liberad|conferenc/i.test(h)) ?? cols.categoricalCols[0];
+  const okCol = headers.find((h) => h.toUpperCase().trim() === "OK");
   
   const countLiberados = filtered.filter((r) => {
     const val = (r[statusCol] ?? "").toLowerCase();
     return val.includes("ok") || val.includes("liberad") || val.includes("concluid") || val.includes("sim") || val.includes("entregue");
   }).length;
+
+  const countOk = okCol 
+    ? filtered.filter((r) => (r[okCol] ?? "").toUpperCase().trim() === "OK").length
+    : 0;
 
   const countNaoLiberados = filtered.length - countLiberados;
   const completion = filtered.length ? Math.round((countLiberados / filtered.length) * 100) : 0;
@@ -430,36 +435,30 @@ function DashboardContent({
       {/* KPI strip */}
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
         <KpiCard
-          label="Liberados"
+          label="Total de Pedidos"
+          value={totalRecords.toLocaleString("pt-BR")}
+          icon={<Database className="h-4 w-4" />}
+          accent="from-[oklch(0.62_0.22_264)] to-[oklch(0.7_0.2_200)]"
+        />
+        <KpiCard
+          label="Liberado"
           value={countLiberados.toLocaleString("pt-BR")}
           delta={`${completion}% de aproveitamento`}
           icon={<CheckCircle2 className="h-4 w-4" />}
           accent="from-emerald-500 to-teal-400"
           progress={completion}
         />
-        {sumValue !== null && (
-          <KpiCard
-            label={sumCol ?? "Total"}
-            value={sumValue.toLocaleString("pt-BR", {
-              style: /valor|preco|total|receita/i.test(sumCol ?? "") ? "currency" : "decimal",
-              currency: "BRL",
-              maximumFractionDigits: 2,
-            })}
-            icon={<TrendingUp className="h-4 w-4" />}
-            accent="from-emerald-500 to-teal-400"
-          />
-        )}
         <KpiCard
-          label="Não Liberados"
+          label="Não Liberado"
           value={countNaoLiberados.toLocaleString("pt-BR")}
           icon={<X className="h-4 w-4" />}
           accent="from-red-500 to-orange-400"
         />
         <KpiCard
-          label="Total de Pedidos"
-          value={totalRecords.toLocaleString("pt-BR")}
-          icon={<Database className="h-4 w-4" />}
-          accent="from-[oklch(0.62_0.22_264)] to-[oklch(0.7_0.2_200)]"
+          label="OK"
+          value={countOk.toLocaleString("pt-BR")}
+          icon={<CheckCircle2 className="h-4 w-4" />}
+          accent="from-blue-500 to-indigo-400"
         />
       </div>
 
