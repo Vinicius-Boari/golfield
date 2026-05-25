@@ -196,31 +196,36 @@ function Sidebar({
           <div className="px-2 py-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
             Abas
           </div>
-          {sheets.map((s) => {
-            const active = s.title === current;
-            return (
-              <button
-                key={s.id}
-                onClick={() => onSelect(s.title)}
-                className={cn(
-                  "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
-                  active
-                    ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
-                    : "hover:bg-muted text-muted-foreground hover:text-foreground",
-                )}
-              >
-                {active ? (
-                  <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
-                ) : (
-                  <Circle className="h-3.5 w-3.5 shrink-0 opacity-40" />
-                )}
-                <span className="truncate flex-1 text-left">{s.title.trim()}</span>
-                <span className={cn("text-[10px] tabular-nums", active ? "opacity-80" : "opacity-50")}>
-                  {s.rowCount}
-                </span>
-              </button>
-            );
-          })}
+          {sheets
+            .filter((s) => {
+              const title = s.title.toUpperCase().trim();
+              return title === "ABRIL" || title === "PEDIDOS DE MAIO";
+            })
+            .map((s) => {
+              const active = s.title === current;
+              return (
+                <button
+                  key={s.id}
+                  onClick={() => onSelect(s.title)}
+                  className={cn(
+                    "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
+                    active
+                      ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                      : "hover:bg-muted text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {active ? (
+                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+                  ) : (
+                    <Circle className="h-3.5 w-3.5 shrink-0 opacity-40" />
+                  )}
+                  <span className="truncate flex-1 text-left">{s.title.trim()}</span>
+                  <span className={cn("text-[10px] tabular-nums", active ? "opacity-80" : "opacity-50")}>
+                    {s.rowCount}
+                  </span>
+                </button>
+              );
+            })}
         </div>
 
         <div className="px-6 py-4 border-t text-[11px] text-muted-foreground flex items-center gap-2">
