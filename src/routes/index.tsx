@@ -95,6 +95,93 @@ const CHART_COLORS = [
 ];
 
 
+function LoginPage({ onLogin }: { onLogin: () => void }) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (username === "golfield" && password === "631525") {
+      sessionStorage.setItem("auth_token", "authorized");
+      onLogin();
+    } else {
+      setError("Credenciais inválidas");
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 ambient-bg">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-md w-full glass p-8 rounded-3xl border border-white/10 shadow-2xl space-y-8"
+      >
+        <div className="text-center space-y-2">
+          <div className="h-16 w-16 bg-gradient-to-br from-cyan-600 to-cyan-800 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-cyan-900/20">
+            <Lock className="h-8 w-8 text-white" />
+          </div>
+          <h1 className="text-3xl font-bold tracking-tight">GolField</h1>
+          <p className="text-muted-foreground">Área Restrita</p>
+        </div>
+
+        <form onSubmit={handleLogin} className="space-y-6">
+          <div className="space-y-2">
+            <label className="text-sm font-medium px-1">Usuário</label>
+            <div className="relative">
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Seu usuário"
+                className="pl-10 h-12 rounded-xl bg-background/50 border-white/10 focus:ring-cyan-500/20"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium px-1">Senha</label>
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Sua senha"
+                className="pl-10 h-12 rounded-xl bg-background/50 border-white/10 focus:ring-cyan-500/20"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
+          </div>
+
+          {error && (
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-sm text-destructive text-center font-medium"
+            >
+              {error}
+            </motion.p>
+          )}
+
+          <Button type="submit" className="w-full h-12 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-800 hover:from-cyan-700 hover:to-cyan-900 text-white font-bold shadow-lg shadow-cyan-900/20 transition-all active:scale-95">
+            Entrar no Painel
+          </Button>
+        </form>
+      </motion.div>
+    </div>
+  );
+}
+
 function DashboardPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return sessionStorage.getItem("auth_token") === "authorized";
