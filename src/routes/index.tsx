@@ -482,38 +482,89 @@ function DashboardContent({
 
       {/* Filters + Table */}
       <div className="glass rounded-2xl p-4 md:p-6 shadow-xl shadow-black/5">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div className="relative lg:col-span-2">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Pesquisar em tudo..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
+              className="pl-9 h-10 rounded-xl border-muted-foreground/20 focus:ring-primary/20"
+            />
+          </div>
 
-        <div className="flex flex-wrap items-center gap-2 mb-4">
+          {["Liberado", "Impresso", "Envio", "R.Separação", "Conferencia", "Entregador"].map((colName) => {
+            const actualHeader = headers.find(h => h.toLowerCase().trim() === colName.toLowerCase().trim());
+            if (!actualHeader) return null;
+
+            const options = Array.from(
+              new Set(validRows.map((r) => (r[actualHeader] ?? "").trim()).filter(Boolean))
+            ).sort().slice(0, 100);
+
+            return (
+              <div key={colName} className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-1">
+                  {colName}
+                </label>
+                <Select
+                  value={filters[actualHeader] ?? "__all__"}
+                  onValueChange={(v) => {
+                    setFilters((f) => ({ ...f, [actualHeader]: v }));
+                    setPage(1);
+                  }}
+                >
+                  <SelectTrigger className="h-10 rounded-xl border-muted-foreground/20">
+                    <SelectValue placeholder={`Filtrar ${colName}`} />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[300px]">
+                    <SelectItem value="__all__">Todos</SelectItem>
+                    {options.map((o) => (
+                      <SelectItem key={o} value={o}>{o}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            );
+          })}
+
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-1">
+              Data Saida
+            </label>
+            <div className="flex gap-2">
+              <Input
+                type="date"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="h-10 rounded-xl border-muted-foreground/20"
+              />
+              <Input
+                type="date"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                className="h-10 rounded-xl border-muted-foreground/20"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2 mb-4 pt-2 border-t border-muted/30">
           <Button
             size="sm"
-            variant={showOnlyEnvio ? "default" : "outline"}
-            onClick={() => {
-              setShowOnlyEnvio(!showOnlyEnvio);
-              setPage(1);
-            }}
-            className={cn("h-8 px-4", showOnlyEnvio && "bg-blue-600 hover:bg-blue-700")}
+            variant="outline"
+            onClick={resetFilters}
+            className="h-8 px-4 rounded-lg border-muted-foreground/20 hover:bg-muted"
           >
-            Data de Envio
-          </Button>
-          <Button
-            size="sm"
-            variant={showOnlyNF ? "default" : "outline"}
-            onClick={() => {
-              setShowOnlyNF(!showOnlyNF);
-              setPage(1);
-            }}
-            className={cn("h-8 px-4", showOnlyNF && "bg-indigo-600 hover:bg-indigo-700")}
-          >
-            Com NF
-          </Button>
-          <Button size="sm" variant="outline" onClick={resetFilters} className="h-8">
             Limpar filtros
           </Button>
           <Button
             size="sm"
             variant="outline"
             onClick={() => downloadCSV(`${sheetTitle.trim()}.csv`, headers, filtered)}
-            className="h-8"
+            className="h-8 px-4 rounded-lg border-muted-foreground/20 hover:bg-muted"
           >
             <Download className="h-3.5 w-3.5 mr-1" /> CSV
           </Button>
@@ -528,7 +579,7 @@ function DashboardContent({
             <Button size="sm" variant="ghost" onClick={refetch} className="h-8 w-8 p-0">
               <RefreshCw className={cn("h-4 w-4", isFetching && "animate-spin")} />
             </Button>
-            <Badge variant="secondary" className="font-medium whitespace-nowrap">
+            <Badge variant="secondary" className="font-medium whitespace-nowrap px-3 py-1 rounded-full bg-primary/10 text-primary border-none">
               {filtered.length.toLocaleString("pt-BR")} registros
             </Badge>
           </div>
