@@ -97,8 +97,15 @@ function DashboardPage() {
 
   const [activeSheet, setActiveSheet] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  
+  const availableSheets = useMemo(() => {
+    return (sheetsQuery.data?.sheets ?? []).filter((s) => {
+      const title = s.title.toUpperCase().trim();
+      return title === "ABRIL" || title === "PEDIDOS DE MAIO";
+    });
+  }, [sheetsQuery.data]);
 
-  const current = activeSheet ?? sheetsQuery.data?.sheets[5]?.title ?? sheetsQuery.data?.sheets[0]?.title ?? null;
+  const current = activeSheet ?? availableSheets[0]?.title ?? sheetsQuery.data?.sheets[0]?.title ?? null;
 
   return (
     <div className="min-h-screen bg-background text-foreground ambient-bg">
