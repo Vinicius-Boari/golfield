@@ -315,6 +315,21 @@ function DashboardContent({
 
   const filtered = useMemo(() => {
     let r = rows;
+
+    // Filter out rows without a valid order number if a "pedido" column exists
+    const pedidoCol = headers.find((h) => {
+      const low = h.toLowerCase().trim();
+      return low === "pedido" || low === "nº pedido" || low === "numero do pedido";
+    });
+
+    if (pedidoCol) {
+      r = r.filter((row) => {
+        const val = (row[pedidoCol] ?? "").trim();
+        // Must exist and contain at least one digit
+        return val !== "" && /\d/.test(val);
+      });
+    }
+
     if (search.trim()) {
       const q = search.toLowerCase();
       r = r.filter((row) => Object.values(row).some((v) => v.toLowerCase().includes(q)));
