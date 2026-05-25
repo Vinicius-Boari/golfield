@@ -498,7 +498,7 @@ function DashboardContent({
           accent="from-red-500 to-orange-400"
         />
         <KpiCard
-          label="OK"
+          label="Entregue"
           value={countOk.toLocaleString("pt-BR")}
           icon={<CheckCircle2 className="h-4 w-4" />}
           accent="from-blue-500 to-indigo-400"
