@@ -864,42 +864,6 @@ function DashboardContent({
             </AnimatePresence>
           </div>
 
-          <div className="relative">
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => setShowPdfOptions(!showPdfOptions)}
-              className="h-8 px-4 rounded-lg border-muted-foreground/20 hover:bg-muted bg-primary/5 text-primary hover:text-primary hover:bg-primary/10"
-            >
-              <Activity className="h-3.5 w-3.5 mr-1" /> Relatório / PDF
-            </Button>
-            
-            <AnimatePresence>
-              {showPdfOptions && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  className="absolute left-0 mt-2 w-48 glass rounded-xl border border-white/10 shadow-2xl z-50 p-2 space-y-1"
-                >
-                  <button
-                    onClick={() => handleDownloadPdf(false)}
-                    className="w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-primary/10 transition-colors flex items-center justify-between"
-                  >
-                    <span>Página Atual</span>
-                    <span className="text-[10px] opacity-50">Baixar esta pág.</span>
-                  </button>
-                  <button
-                    onClick={() => handleDownloadPdf(true)}
-                    className="w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-primary/10 transition-colors flex items-center justify-between"
-                  >
-                    <span>Tudo</span>
-                    <span className="text-[10px] opacity-50">Baixar todas pág.</span>
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
 
           <div className="ml-auto flex items-center gap-3">
             <div className="hidden md:flex items-center gap-2 text-[11px] text-muted-foreground">
@@ -908,6 +872,9 @@ function DashboardContent({
                 Sincronizado {new Date(lastUpdated).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
               </span>
             </div>
+            <Button size="sm" variant="ghost" onClick={refetch} className="h-8 w-8 p-0">
+              <RefreshCw className={cn("h-4 w-4", isFetching && "animate-spin")} />
+            </Button>
             <Badge variant="secondary" className="font-medium whitespace-nowrap px-3 py-1 rounded-full bg-primary/10 text-primary border-none">
               {filtered.length.toLocaleString("pt-BR")} registros
             </Badge>
