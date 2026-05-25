@@ -66,6 +66,7 @@ export const listSheets = createServerFn({ method: "GET" }).handler(async () => 
     `${GATEWAY}/spreadsheets/${SPREADSHEET_ID}?fields=sheets.properties,properties.title`,
     "Sheets list",
   );
+  
   const sheets: SheetMeta[] = (j.sheets ?? []).map((s: any) => ({
     id: s.properties.sheetId,
     title: s.properties.title,

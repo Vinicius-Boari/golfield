@@ -97,8 +97,15 @@ function DashboardPage() {
 
   const [activeSheet, setActiveSheet] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  
+  const availableSheets = useMemo(() => {
+    return (sheetsQuery.data?.sheets ?? []).filter((s) => {
+      const title = s.title.toUpperCase().trim();
+      return title === "ABRIL" || title === "PEDIDOS DE MAIO";
+    });
+  }, [sheetsQuery.data]);
 
-  const current = activeSheet ?? sheetsQuery.data?.sheets[5]?.title ?? sheetsQuery.data?.sheets[0]?.title ?? null;
+  const current = activeSheet ?? availableSheets[0]?.title ?? sheetsQuery.data?.sheets[0]?.title ?? null;
 
   return (
     <div className="min-h-screen bg-background text-foreground ambient-bg">
@@ -119,10 +126,17 @@ function DashboardPage() {
         <div className="flex-1 min-w-0 lg:pl-72">
           <Header onMenu={() => setSidebarOpen(true)} sheetTitle={current} />
           <main className="px-4 md:px-8 pb-16 pt-6 space-y-6">
-            {current ? (
+            {sheetsQuery.isError ? (
+              <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-6 text-sm text-destructive">
+                Erro ao conectar: {(sheetsQuery.error as Error).message}
+              </div>
+            ) : current ? (
               <SheetDashboard sheetTitle={current} />
             ) : (
-              <div className="text-muted-foreground text-sm">Carregando planilhas…</div>
+              <div className="text-muted-foreground text-sm flex items-center gap-2">
+                <RefreshCw className="h-4 w-4 animate-spin" />
+                Carregando planilhas…
+              </div>
             )}
           </main>
         </div>
@@ -362,10 +376,10 @@ function DashboardContent({
     if (dateFromEntrada || dateToEntrada) {
       const from = dateFromEntrada ? new Date(dateFromEntrada) : null;
       const to = dateToEntrada ? new Date(dateToEntrada) : null;
-      const header = headers.find(h => h.toUpperCase().trim() === "ENVIO DO P");
-      if (header) {
+      const headerEntrada = headers.find(h => h.toUpperCase().trim() === "ENVIO DO P");
+      if (headerEntrada) {
         r = r.filter((row) => {
-          const d = parseDate(row[header] ?? "");
+          const d = parseDate(row[headerEntrada] ?? "");
           if (!d) return false;
           if (from && d < from) return false;
           if (to && d > to) return false;
@@ -378,10 +392,10 @@ function DashboardContent({
     if (dateFromSaida || dateToSaida) {
       const from = dateFromSaida ? new Date(dateFromSaida) : null;
       const to = dateToSaida ? new Date(dateToSaida) : null;
-      const header = headers.find(h => h.toUpperCase().trim() === "DATA SAIDA");
-      if (header) {
+      const headerSaida = headers.find(h => h.toUpperCase().trim() === "DATA SAIDA");
+      if (headerSaida) {
         r = r.filter((row) => {
-          const d = parseDate(row[header] ?? "");
+          const d = parseDate(row[headerSaida] ?? "");
           if (!d) return false;
           if (from && d < from) return false;
           if (to && d > to) return false;
