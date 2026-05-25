@@ -871,7 +871,7 @@ function DashboardContent({
               onClick={() => setShowPdfOptions(!showPdfOptions)}
               className="h-8 px-4 rounded-lg border-muted-foreground/20 hover:bg-muted bg-primary/5 text-primary hover:text-primary hover:bg-primary/10"
             >
-              <Download className="h-3.5 w-3.5 mr-1" /> PDF
+              <Activity className="h-3.5 w-3.5 mr-1" /> Relatório / PDF
             </Button>
             
             <AnimatePresence>
