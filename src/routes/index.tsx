@@ -444,7 +444,9 @@ function DashboardContent({
   const pieCol = cols.categoricalCols[1] ?? cols.categoricalCols[0];
   const barData = barCol ? countBy(filtered, barCol, 8) : [];
   const pieData = pieCol ? countBy(filtered, pieCol, 6) : [];
-  const lineData = dateField ? timeSeries(filtered, dateField, sumCol) : [];
+  
+  const dateFieldForChart = headers.find(h => h.toUpperCase().trim() === "ENVIO DO P") ?? cols.dateCols[0];
+  const lineData = dateFieldForChart ? timeSeries(filtered, dateFieldForChart, sumCol) : [];
 
   // Pagination
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
