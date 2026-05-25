@@ -477,6 +477,7 @@ function DashboardContent({
 
       const opt = {
         margin: 10,
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
         filename: `relatorio-${sheetTitle.toLowerCase().replace(/\s+/g, '-')}-${new Date().toLocaleDateString('pt-BR')}.pdf`,
         image: { type: 'jpeg' as const, quality: 0.98 },
         html2canvas: { 
