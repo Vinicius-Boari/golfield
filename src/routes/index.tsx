@@ -186,7 +186,8 @@ function DashboardPage() {
   const current = activeSheet ?? availableSheets[0]?.title ?? sheetsQuery.data?.sheets[0]?.title ?? null;
 
   return (
-    <div className="min-h-screen bg-background text-foreground ambient-bg">
+    <NetworkGuard>
+      <div className="min-h-screen bg-background text-foreground ambient-bg">
       <div className="flex">
         {/* Sidebar */}
         <Sidebar
