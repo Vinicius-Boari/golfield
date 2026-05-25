@@ -238,6 +238,10 @@ function DashboardPage() {
 
   const current = activeSheet ?? availableSheets[availableSheets.length - 1]?.title ?? sheetsQuery.data?.sheets[sheetsQuery.data.sheets.length - 1]?.title ?? null;
 
+  const currentSheetObj = useMemo(() => {
+    return (sheetsQuery.data?.sheets ?? []).find(s => s.title === current);
+  }, [sheetsQuery.data, current]);
+
   return (
     <div className="min-h-screen bg-background text-foreground ambient-bg">
       <div className="flex">
@@ -255,9 +259,41 @@ function DashboardPage() {
         />
 
         <div className="flex-1 min-w-0 lg:pl-72">
-          <Header onMenu={() => setSidebarOpen(true)} sheetTitle={current} />
+          <Header 
+            onMenu={() => setSidebarOpen(true)} 
+            sheetTitle={current} 
+            isSheetMode={isSheetMode}
+            onToggleMode={() => setIsSheetMode(!isSheetMode)}
+            gid={currentSheetObj?.id}
+          />
           <main className="px-4 md:px-8 pb-16 pt-6 space-y-6">
-            {sheetsQuery.isError ? (
+            {isSheetMode ? (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="w-full h-[calc(100vh-140px)] rounded-2xl overflow-hidden border border-white/10 glass shadow-2xl relative"
+              >
+                <iframe 
+                  src={`https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/edit${currentSheetObj?.id !== undefined ? `#gid=${currentSheetObj.id}` : ''}&rm=minimal`}
+                  className="w-full h-full bg-white"
+                  title="Google Sheet"
+                  allow="autoplay; encrypted-media"
+                  allowFullScreen
+                />
+                <div className="absolute bottom-4 right-4 flex gap-2">
+                   <Button variant="secondary" size="sm" className="shadow-lg" asChild>
+                     <a 
+                       href={`https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/edit${currentSheetObj?.id !== undefined ? `#gid=${currentSheetObj.id}` : ''}`} 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                     >
+                       <ExternalLink className="h-4 w-4 mr-2" />
+                       Abrir em Tela Cheia
+                     </a>
+                   </Button>
+                </div>
+              </motion.div>
+            ) : sheetsQuery.isError ? (
               <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-6 text-sm text-destructive">
                 Erro ao conectar: {(sheetsQuery.error as Error).message}
               </div>
