@@ -209,7 +209,7 @@ function DashboardPage() {
     return <LoginPage onLogin={() => setIsAuthenticated(true)} />;
   }
 
-  const current = activeSheet ?? availableSheets[0]?.title ?? sheetsQuery.data?.sheets[0]?.title ?? null;
+  const current = activeSheet ?? availableSheets[availableSheets.length - 1]?.title ?? sheetsQuery.data?.sheets[sheetsQuery.data.sheets.length - 1]?.title ?? null;
 
   return (
     <div className="min-h-screen bg-background text-foreground ambient-bg">
