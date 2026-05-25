@@ -502,7 +502,7 @@ function DashboardContent({
           )}
         </ChartCard>
 
-        <ChartCard title="Evolução temporal" subtitle={dateField ? `Baseado em ${dateField} ${sumCol ? `(Soma de ${sumCol})` : "(Contagem)"}` : "Sem data detectada"} className="lg:col-span-3">
+        <ChartCard title="Evolução temporal" subtitle={dateField ? (sumCol ? `${dateField} · Soma de ${sumCol}` : `${dateField} · Contagem`) : "Sem data detectada"} className="lg:col-span-3">
           {lineData.length ? (
             <ResponsiveContainer width="100%" height={260}>
               <AreaChart data={lineData} margin={{ top: 10, right: 16, left: -10, bottom: 0 }}>
