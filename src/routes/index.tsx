@@ -389,8 +389,12 @@ function DashboardContent({
   
   const statusCol = headers.find((h) => /status|ok|liberad|conferenc/i.test(h)) ?? cols.categoricalCols[0];
   
-  const countNaoLiberados = filtered.length - countLiberados;
+  const countLiberados = filtered.filter((r) => {
+    const val = (r[statusCol] ?? "").toLowerCase();
+    return val.includes("ok") || val.includes("liberad") || val.includes("concluid") || val.includes("sim") || val.includes("entregue");
+  }).length;
 
+  const countNaoLiberados = filtered.length - countLiberados;
   const completion = filtered.length ? Math.round((countLiberados / filtered.length) * 100) : 0;
 
   // Chart data
