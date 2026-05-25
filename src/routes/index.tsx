@@ -45,9 +45,10 @@ import {
   Eye,
   EyeOff,
   ExternalLink,
+  Table,
 } from "lucide-react";
 
-import { getSheetData, listSheets } from "@/lib/sheets.functions";
+import { getSheetData, listSheets, SPREADSHEET_ID } from "@/lib/sheets.functions";
 
 import {
   classifyColumns,
