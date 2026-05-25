@@ -247,7 +247,7 @@ function Sidebar({
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
-          Sincronizando a cada 10s
+          Sincronizando a cada 30s
         </div>
       </aside>
     </>
@@ -266,8 +266,8 @@ function Header({ onMenu, sheetTitle }: { onMenu: () => void; sheetTitle: string
           <h1 className="font-semibold tracking-tight truncate">
             {sheetTitle?.trim() ?? "Painel"}
           </h1>
-          <Badge variant="secondary" className="hidden sm:inline-flex ml-2 text-[10px] font-medium">
-            <Activity className="h-3 w-3 mr-1" /> Tempo real
+          <Badge variant="secondary" className="hidden sm:inline-flex ml-2 text-[10px] font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-none">
+            <Activity className="h-3 w-3 mr-1" /> Sincronizado
           </Badge>
         </div>
         <div className="ml-auto flex items-center gap-1.5">
