@@ -39,6 +39,10 @@ import {
   Menu,
   X,
   Box,
+  Lock,
+  User,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 
 import { getSheetData, listSheets } from "@/lib/sheets.functions";
@@ -92,21 +96,31 @@ const CHART_COLORS = [
 
 
 function DashboardPage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return sessionStorage.getItem("auth_token") === "authorized";
+  });
+
   const sheetsQuery = useQuery({
     queryKey: ["sheets"],
     queryFn: () => listSheets(),
     refetchInterval: 60_000,
+    enabled: isAuthenticated,
   });
 
   const [activeSheet, setActiveSheet] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   
   const availableSheets = useMemo(() => {
+    if (!isAuthenticated) return [];
     return (sheetsQuery.data?.sheets ?? []).filter((s) => {
       const title = s.title.toUpperCase().trim();
       return title === "ABRIL" || title === "PEDIDOS DE MAIO";
     });
-  }, [sheetsQuery.data]);
+  }, [sheetsQuery.data, isAuthenticated]);
+
+  if (!isAuthenticated) {
+    return <LoginPage onLogin={() => setIsAuthenticated(true)} />;
+  }
 
   const current = activeSheet ?? availableSheets[0]?.title ?? sheetsQuery.data?.sheets[0]?.title ?? null;
 
