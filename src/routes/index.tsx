@@ -605,7 +605,7 @@ function DashboardContent({
 
           {cols.categoricalCols.slice(0, 3).map((c) => {
             const options = Array.from(
-              new Set(rows.map((r) => (r[c] ?? "").trim()).filter(Boolean)),
+              new Set(validRows.map((r) => (r[c] ?? "").trim()).filter(Boolean)),
             ).slice(0, 60);
             return (
               <Select
@@ -664,7 +664,7 @@ function DashboardContent({
             <Download className="h-3.5 w-3.5 mr-1" /> CSV
           </Button>
           <Badge variant="secondary" className="ml-auto">
-            {filtered.length.toLocaleString("pt-BR")} de {rows.length.toLocaleString("pt-BR")} registros
+            {filtered.length.toLocaleString("pt-BR")} de {validRows.length.toLocaleString("pt-BR")} registros
           </Badge>
         </div>
 
