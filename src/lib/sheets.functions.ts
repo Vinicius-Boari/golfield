@@ -28,9 +28,7 @@ async function fetchWithRetry(url: string, label: string, attempts = 5): Promise
         await new Promise((r) => setTimeout(r, base * Math.pow(2, i)));
         continue;
       }
-      const errorBody = await res.text();
-      console.error(`[fetchWithRetry] ${label} failed ${res.status}: ${errorBody.slice(0, 500)}`);
-      throw new Error(`${label} failed ${res.status}: ${errorBody.slice(0, 200)}`);
+      throw new Error(`${label} failed ${res.status}: ${(await res.text()).slice(0, 200)}`);
     } catch (e) {
       if (i === attempts - 1) throw e;
       lastErr = (e as Error).message;
