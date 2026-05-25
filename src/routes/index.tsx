@@ -903,7 +903,10 @@ function DashboardContent({
 
 
           <div className="ml-auto flex items-center gap-3">
-            <div className="hidden md:flex items-center gap-2 text-[11px] text-muted-foreground">
+            <div 
+              className="hidden md:flex items-center gap-2 text-[11px] text-muted-foreground cursor-pointer hover:text-primary transition-colors select-none"
+              onClick={() => refetch()}
+            >
               <RefreshCw className={cn("h-3 w-3", isFetching && "animate-spin")} />
               <span>
                 Sincronizado {new Date(lastUpdated).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
