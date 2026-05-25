@@ -351,16 +351,37 @@ function DashboardContent({
       if (!v || v === "__all__") continue;
       r = r.filter((row) => (row[k] ?? "").trim() === v);
     }
-    if (dateField && (dateFrom || dateTo)) {
-      const from = dateFrom ? new Date(dateFrom) : null;
-      const to = dateTo ? new Date(dateTo) : null;
-      r = r.filter((row) => {
-        const d = parseDate(row[dateField] ?? "");
-        if (!d) return false;
-        if (from && d < from) return false;
-        if (to && d > to) return false;
-        return true;
-      });
+    
+    // Filtro DATA ENTRADA (Coluna ENVIO DO P)
+    if (dateFromEntrada || dateToEntrada) {
+      const from = dateFromEntrada ? new Date(dateFromEntrada) : null;
+      const to = dateToEntrada ? new Date(dateToEntrada) : null;
+      const header = headers.find(h => h.toUpperCase().trim() === "ENVIO DO P");
+      if (header) {
+        r = r.filter((row) => {
+          const d = parseDate(row[header] ?? "");
+          if (!d) return false;
+          if (from && d < from) return false;
+          if (to && d > to) return false;
+          return true;
+        });
+      }
+    }
+
+    // Filtro DATA SAIDA (Coluna DATA SAIDA)
+    if (dateFromSaida || dateToSaida) {
+      const from = dateFromSaida ? new Date(dateFromSaida) : null;
+      const to = dateToSaida ? new Date(dateToSaida) : null;
+      const header = headers.find(h => h.toUpperCase().trim() === "DATA SAIDA");
+      if (header) {
+        r = r.filter((row) => {
+          const d = parseDate(row[header] ?? "");
+          if (!d) return false;
+          if (from && d < from) return false;
+          if (to && d > to) return false;
+          return true;
+        });
+      }
     }
     if (sortKey) {
       const numeric = cols.numericCols.includes(sortKey);
