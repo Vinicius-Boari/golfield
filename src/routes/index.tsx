@@ -44,6 +44,7 @@ import {
   User,
   Eye,
   EyeOff,
+  ExternalLink,
 } from "lucide-react";
 
 import { getSheetData, listSheets } from "@/lib/sheets.functions";
@@ -863,9 +864,19 @@ function DashboardContent({
               )}
             </AnimatePresence>
           </div>
+          </div>
 
-
-
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-8 px-4 rounded-lg border-muted-foreground/20 hover:bg-muted bg-emerald-500/5 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-500/10"
+            onClick={() => {
+              const spreadsheetId = "1LoDg7FS0Aadc9WX-lPYHF8QNS3dfPWelAVPBccH-q4c";
+              window.open(`https://docs.google.com/spreadsheets/d/${spreadsheetId}/edit#gid=0`, "_blank");
+            }}
+          >
+            <ExternalLink className="h-3.5 w-3.5 mr-1" /> Editar Planilha
+          </Button>
           <div className="ml-auto flex items-center gap-3">
             <div 
               className="hidden md:flex items-center gap-2 text-[11px] text-muted-foreground cursor-pointer hover:text-primary transition-colors select-none"
