@@ -464,8 +464,10 @@ function DashboardContent({
   const resetFilters = () => {
     setSearch("");
     setFilters({});
-    setDateFrom("");
-    setDateTo("");
+    setDateFromEntrada("");
+    setDateToEntrada("");
+    setDateFromSaida("");
+    setDateToSaida("");
     setPage(1);
     setShowOnlyEnvio(false);
     setShowOnlyNF(false);
