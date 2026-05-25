@@ -370,6 +370,14 @@ function DashboardContent({
     }
     for (const [k, v] of Object.entries(filters)) {
       if (!v || v === "__all__") continue;
+      if (v === "__has_nf__") {
+        r = r.filter((row) => (row[k] ?? "").trim() !== "");
+        continue;
+      }
+      if (v === "__no_nf__") {
+        r = r.filter((row) => (row[k] ?? "").trim() === "");
+        continue;
+      }
       r = r.filter((row) => (row[k] ?? "").trim() === v);
     }
     
