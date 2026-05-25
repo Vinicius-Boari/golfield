@@ -377,7 +377,7 @@ function DashboardContent({
         return sortDir === "asc" ? cmp : -cmp;
       });
     }
-    }
+
     if (showOnlyEnvio) {
       const envioCol = headers.find((h) => /envio|despacho/i.test(h));
       if (envioCol) {
