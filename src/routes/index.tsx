@@ -940,7 +940,8 @@ function DashboardContent({
                         );
                       })}
                     </motion.tr>
-                  ))}
+                    );
+                  })}
                 </AnimatePresence>
                 {pageRows.length === 0 && (
                   <tr>
