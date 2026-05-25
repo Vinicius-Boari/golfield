@@ -73,27 +73,29 @@
 
   tr {
     page-break-inside: avoid !important;
-    border-bottom: 1px solid #eee !important;
+    border-bottom: 1px solid #000 !important;
+    color: black !important;
   }
 
   th {
     background-color: #f8fafc !important;
-    color: #475569 !important;
+    color: black !important;
     font-weight: bold !important;
     text-align: left !important;
-    padding: 10px 8px !important;
-    font-size: 10px !important;
-    border: 1px solid #e2e8f0 !important;
+    padding: 4px 6px !important;
+    font-size: 9px !important;
+    border: 1px solid #000 !important;
     text-transform: uppercase !important;
   }
 
   td {
-    padding: 8px !important;
-    font-size: 10px !important;
-    border: 1px solid #e2e8f0 !important;
+    padding: 3px 6px !important;
+    font-size: 9px !important;
+    border: 1px solid #000 !important;
     white-space: normal !important;
     word-break: break-word !important;
     vertical-align: middle !important;
+    color: black !important;
   }
 
   /* KPI cards in print */
