@@ -593,7 +593,7 @@ function DashboardContent({
             );
           })}
 
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-1.5 lg:col-span-2">
             <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-1">
               Data Entrada
             </label>
@@ -619,7 +619,7 @@ function DashboardContent({
             </div>
           </div>
 
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-1.5 lg:col-span-2">
             <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-1">
               Data Saida
             </label>
