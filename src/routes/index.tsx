@@ -565,23 +565,45 @@ function DashboardContent({
             <div className="flex gap-2">
               <Input
                 type="date"
-                value={dateFrom}
+                value={dateFromEntrada}
                 onChange={(e) => {
-                  setDateFrom(e.target.value);
+                  setDateFromEntrada(e.target.value);
                   setPage(1);
-                  const h = headers.find(h => h.toUpperCase().trim() === "ENVIO DO P");
-                  if (h) setDateField(h);
                 }}
                 className="h-10 rounded-xl border-muted-foreground/20"
               />
               <Input
                 type="date"
-                value={dateTo}
+                value={dateToEntrada}
                 onChange={(e) => {
-                  setDateTo(e.target.value);
+                  setDateToEntrada(e.target.value);
                   setPage(1);
-                  const h = headers.find(h => h.toUpperCase().trim() === "ENVIO DO P");
-                  if (h) setDateField(h);
+                }}
+                className="h-10 rounded-xl border-muted-foreground/20"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-1">
+              Data Saida
+            </label>
+            <div className="flex gap-2">
+              <Input
+                type="date"
+                value={dateFromSaida}
+                onChange={(e) => {
+                  setDateFromSaida(e.target.value);
+                  setPage(1);
+                }}
+                className="h-10 rounded-xl border-muted-foreground/20"
+              />
+              <Input
+                type="date"
+                value={dateToSaida}
+                onChange={(e) => {
+                  setDateToSaida(e.target.value);
+                  setPage(1);
                 }}
                 className="h-10 rounded-xl border-muted-foreground/20"
               />
