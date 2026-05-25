@@ -914,10 +914,11 @@ function DashboardContent({
               <tbody>
                 <AnimatePresence initial={false}>
                   {(isPrintingAll || isGeneratingPdf || window.matchMedia('print').matches ? ((isPrintingAll || isGeneratingPdf) ? filtered : pageRows) : pageRows).map((row, idx) => {
-                    const statusVal = Object.entries(row).find(([h, v]) => /status|pendente|situac/i.test(h))?.[1]?.toLowerCase() || "";
-                    const dateVal = Object.entries(row).find(([h, v]) => /data|entrada|pedido/i.test(h))?.[1] || "";
-                    const dateObj = parseDate(dateVal);
-                    const isOverdue = dateObj && (new Date().getTime() - dateObj.getTime() > 24 * 60 * 60 * 1000) && (statusVal.includes("pendente") || statusVal.includes("atrasad"));
+                    const statusEntry = Object.entries(row).find(([h]) => /status|pendente|situac/i.test(h));
+                    const statusVal = (statusEntry?.[1] ?? "").toLowerCase();
+                    const dateEntry = Object.entries(row).find(([h]) => /data|entrada|pedido/i.test(h));
+                    const dateObj = parseDate(dateEntry?.[1] ?? "");
+                    const isOverdue = !!dateObj && (Date.now() - dateObj.getTime() > 24 * 60 * 60 * 1000) && (statusVal.includes("pendente") || statusVal.includes("atrasad"));
 
                     return (
                       <motion.tr
@@ -931,15 +932,15 @@ function DashboardContent({
                           isOverdue && "bg-destructive/10 dark:bg-destructive/20 border-l-4 border-l-destructive"
                         )}
                       >
-                      {headers.map((h) => {
-                        const v = row[h] ?? "";
-                        return (
-                          <td key={h} className="px-4 py-2.5 whitespace-nowrap max-w-[260px] truncate">
-                            <CellRender value={v} header={h} />
-                          </td>
-                        );
-                      })}
-                    </motion.tr>
+                        {headers.map((h) => {
+                          const v = row[h] ?? "";
+                          return (
+                            <td key={h} className="px-4 py-2.5 whitespace-nowrap max-w-[260px] truncate">
+                              <CellRender value={v} header={h} />
+                            </td>
+                          );
+                        })}
+                      </motion.tr>
                     );
                   })}
                 </AnimatePresence>
