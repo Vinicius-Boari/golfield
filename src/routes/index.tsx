@@ -394,6 +394,7 @@ function DashboardContent({
     return val.includes("ok") || val.includes("liberad") || val.includes("concluid") || val.includes("sim") || val.includes("entregue");
   }).length;
 
+  const countNaoLiberados = filtered.length - countLiberados;
   const completion = filtered.length ? Math.round((countLiberados / filtered.length) * 100) : 0;
 
   // Chart data
@@ -448,14 +449,12 @@ function DashboardContent({
             accent="from-emerald-500 to-teal-400"
           />
         )}
-        {uniqueClients !== null && (
-          <KpiCard
-            label={`${cols.categoricalCols[0]} únicos`}
-            value={uniqueClients.toLocaleString("pt-BR")}
-            icon={<Sparkles className="h-4 w-4" />}
-            accent="from-amber-500 to-orange-400"
-          />
-        )}
+        <KpiCard
+          label="Não Liberados"
+          value={countNaoLiberados.toLocaleString("pt-BR")}
+          icon={<X className="h-4 w-4" />}
+          accent="from-red-500 to-orange-400"
+        />
         <KpiCard
           label="Total de Pedidos"
           value={totalRecords.toLocaleString("pt-BR")}
