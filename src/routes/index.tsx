@@ -305,9 +305,10 @@ function DashboardContent({
 
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState<Record<string, string>>({});
-  const [dateField, setDateField] = useState<string>("ENVIO DO P");
-  const [dateFrom, setDateFrom] = useState<string>("");
-  const [dateTo, setDateTo] = useState<string>("");
+  const [dateFromEntrada, setDateFromEntrada] = useState<string>("");
+  const [dateToEntrada, setDateToEntrada] = useState<string>("");
+  const [dateFromSaida, setDateFromSaida] = useState<string>("");
+  const [dateToSaida, setDateToSaida] = useState<string>("");
   const [page, setPage] = useState(1);
   const [pageSize] = useState(15);
   const [sortKey, setSortKey] = useState<string | null>(null);
@@ -350,16 +351,37 @@ function DashboardContent({
       if (!v || v === "__all__") continue;
       r = r.filter((row) => (row[k] ?? "").trim() === v);
     }
-    if (dateField && (dateFrom || dateTo)) {
-      const from = dateFrom ? new Date(dateFrom) : null;
-      const to = dateTo ? new Date(dateTo) : null;
-      r = r.filter((row) => {
-        const d = parseDate(row[dateField] ?? "");
-        if (!d) return false;
-        if (from && d < from) return false;
-        if (to && d > to) return false;
-        return true;
-      });
+    
+    // Filtro DATA ENTRADA (Coluna ENVIO DO P)
+    if (dateFromEntrada || dateToEntrada) {
+      const from = dateFromEntrada ? new Date(dateFromEntrada) : null;
+      const to = dateToEntrada ? new Date(dateToEntrada) : null;
+      const header = headers.find(h => h.toUpperCase().trim() === "ENVIO DO P");
+      if (header) {
+        r = r.filter((row) => {
+          const d = parseDate(row[header] ?? "");
+          if (!d) return false;
+          if (from && d < from) return false;
+          if (to && d > to) return false;
+          return true;
+        });
+      }
+    }
+
+    // Filtro DATA SAIDA (Coluna DATA SAIDA)
+    if (dateFromSaida || dateToSaida) {
+      const from = dateFromSaida ? new Date(dateFromSaida) : null;
+      const to = dateToSaida ? new Date(dateToSaida) : null;
+      const header = headers.find(h => h.toUpperCase().trim() === "DATA SAIDA");
+      if (header) {
+        r = r.filter((row) => {
+          const d = parseDate(row[header] ?? "");
+          if (!d) return false;
+          if (from && d < from) return false;
+          if (to && d > to) return false;
+          return true;
+        });
+      }
     }
     if (sortKey) {
       const numeric = cols.numericCols.includes(sortKey);
@@ -391,7 +413,7 @@ function DashboardContent({
       }
     }
     return r;
-  }, [validRows, search, filters, dateField, dateFrom, dateTo, sortKey, sortDir, cols, showOnlyEnvio, showOnlyNF, headers]);
+  }, [validRows, search, filters, dateFromEntrada, dateToEntrada, dateFromSaida, dateToSaida, sortKey, sortDir, cols, showOnlyEnvio, showOnlyNF, headers]);
 
   // KPIs
   const totalRecords = filtered.length;
@@ -422,7 +444,9 @@ function DashboardContent({
   const pieCol = cols.categoricalCols[1] ?? cols.categoricalCols[0];
   const barData = barCol ? countBy(filtered, barCol, 8) : [];
   const pieData = pieCol ? countBy(filtered, pieCol, 6) : [];
-  const lineData = dateField ? timeSeries(filtered, dateField, sumCol) : [];
+  
+  const dateFieldForChart = headers.find(h => h.toUpperCase().trim() === "ENVIO DO P") ?? cols.dateCols[0];
+  const lineData = dateFieldForChart ? timeSeries(filtered, dateFieldForChart, sumCol) : [];
 
   // Pagination
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
@@ -440,8 +464,10 @@ function DashboardContent({
   const resetFilters = () => {
     setSearch("");
     setFilters({});
-    setDateFrom("");
-    setDateTo("");
+    setDateFromEntrada("");
+    setDateToEntrada("");
+    setDateFromSaida("");
+    setDateToSaida("");
     setPage(1);
     setShowOnlyEnvio(false);
     setShowOnlyNF(false);
@@ -539,23 +565,45 @@ function DashboardContent({
             <div className="flex gap-2">
               <Input
                 type="date"
-                value={dateFrom}
+                value={dateFromEntrada}
                 onChange={(e) => {
-                  setDateFrom(e.target.value);
+                  setDateFromEntrada(e.target.value);
                   setPage(1);
-                  const h = headers.find(h => h.toUpperCase().trim() === "ENVIO DO P");
-                  if (h) setDateField(h);
                 }}
                 className="h-10 rounded-xl border-muted-foreground/20"
               />
               <Input
                 type="date"
-                value={dateTo}
+                value={dateToEntrada}
                 onChange={(e) => {
-                  setDateTo(e.target.value);
+                  setDateToEntrada(e.target.value);
                   setPage(1);
-                  const h = headers.find(h => h.toUpperCase().trim() === "ENVIO DO P");
-                  if (h) setDateField(h);
+                }}
+                className="h-10 rounded-xl border-muted-foreground/20"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-1">
+              Data Saida
+            </label>
+            <div className="flex gap-2">
+              <Input
+                type="date"
+                value={dateFromSaida}
+                onChange={(e) => {
+                  setDateFromSaida(e.target.value);
+                  setPage(1);
+                }}
+                className="h-10 rounded-xl border-muted-foreground/20"
+              />
+              <Input
+                type="date"
+                value={dateToSaida}
+                onChange={(e) => {
+                  setDateToSaida(e.target.value);
+                  setPage(1);
                 }}
                 className="h-10 rounded-xl border-muted-foreground/20"
               />
