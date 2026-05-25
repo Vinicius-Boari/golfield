@@ -183,7 +183,7 @@ function Sidebar({
       >
         <div className="flex items-center justify-between px-6 py-5 border-b">
           <div className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white shadow-lg shadow-orange-500/20">
+            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center text-white shadow-lg shadow-red-900/20">
               <Database className="h-4 w-4" />
             </div>
             <div>
@@ -501,7 +501,7 @@ function DashboardContent({
           label="Total de Pedidos"
           value={totalRecords.toLocaleString("pt-BR")}
           icon={<Database className="h-4 w-4" />}
-          accent="from-[oklch(0.62_0.22_264)] to-[oklch(0.7_0.2_200)]"
+          accent="from-red-600 to-red-800"
         />
         <KpiCard
           label="Liberado"
