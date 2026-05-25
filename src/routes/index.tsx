@@ -28,6 +28,7 @@ import {
   TrendingUp,
   Activity,
   Sparkles,
+  Calendar,
   Filter,
   ChevronLeft,
   ChevronRight,
@@ -584,7 +585,8 @@ function DashboardContent({
           })}
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-1">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-1 flex items-center gap-1.5">
+              <Calendar className="h-3 w-3" />
               Data Entrada
             </label>
             <div className="flex gap-2">
@@ -610,7 +612,8 @@ function DashboardContent({
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-1">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-1 flex items-center gap-1.5">
+              <Calendar className="h-3 w-3" />
               Data Saida
             </label>
             <div className="flex gap-2">
