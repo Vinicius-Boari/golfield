@@ -335,7 +335,7 @@ function DashboardContent({
   const [sortKey, setSortKey] = useState<string | null>(null);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [showOnlyEnvio, setShowOnlyEnvio] = useState(false);
-  const [showOnlyNF, setShowOnlyNF] = useState(false);
+  
 
   const validRows = useMemo(() => {
     const pedidoCol = headers.find((h) => {
@@ -435,14 +435,8 @@ function DashboardContent({
         r = r.filter((row) => (row[envioCol] ?? "").trim() !== "");
       }
     }
-    if (showOnlyNF) {
-      const nfCol = headers.find((h) => /nf|nota|fiscal/i.test(h));
-      if (nfCol) {
-        r = r.filter((row) => (row[nfCol] ?? "").trim() !== "");
-      }
-    }
     return r;
-  }, [validRows, search, filters, dateFromEntrada, dateToEntrada, dateFromSaida, dateToSaida, sortKey, sortDir, cols, showOnlyEnvio, showOnlyNF, headers]);
+  }, [validRows, search, filters, dateFromEntrada, dateToEntrada, dateFromSaida, dateToSaida, sortKey, sortDir, cols, showOnlyEnvio, headers]);
 
   // KPIs
   const totalRecords = filtered.length;
@@ -499,7 +493,7 @@ function DashboardContent({
     setDateToSaida("");
     setPage(1);
     setShowOnlyEnvio(false);
-    setShowOnlyNF(false);
+    
   };
 
   return (
@@ -653,20 +647,6 @@ function DashboardContent({
         </div>
 
         <div className="flex flex-wrap items-center gap-2 mb-4 pt-2 border-t border-muted/30">
-          <Button
-            size="sm"
-            variant={showOnlyNF ? "default" : "outline"}
-            onClick={() => {
-              setShowOnlyNF(!showOnlyNF);
-              setPage(1);
-            }}
-            className={cn(
-              "h-8 px-4 rounded-lg border-muted-foreground/20 hover:bg-muted",
-              showOnlyNF && "bg-indigo-600 hover:bg-indigo-700 text-white border-transparent"
-            )}
-          >
-            Com NF
-          </Button>
           <Button
             size="sm"
             variant="outline"
