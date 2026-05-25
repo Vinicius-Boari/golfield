@@ -655,7 +655,7 @@ function DashboardContent({
   };
 
   return (
-    <div className="space-y-6">
+    <div ref={reportRef} className={cn("space-y-6", isGeneratingPdf && "pdf-mode")}>
       {/* KPI strip */}
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
         <KpiCard
