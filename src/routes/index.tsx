@@ -322,7 +322,9 @@ function DashboardContent({
         low === "nº do pedido" ||
         low === "numero do pedido" ||
         low === "código" ||
-        low === "id"
+        low === "id" ||
+        low === "venda" ||
+        low.startsWith("nº")
       );
     });
 
