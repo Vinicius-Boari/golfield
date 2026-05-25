@@ -913,15 +913,24 @@ function DashboardContent({
               </thead>
               <tbody>
                 <AnimatePresence initial={false}>
-                  {(isPrintingAll || isGeneratingPdf || window.matchMedia('print').matches ? ((isPrintingAll || isGeneratingPdf) ? filtered : pageRows) : pageRows).map((row, idx) => (
-                    <motion.tr
-                      key={`${safePage}-${idx}`}
-                      initial={{ opacity: 0, y: 4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.15, delay: idx * 0.01 }}
-                      className="border-t hover:bg-muted/30 transition-colors"
-                    >
+                  {(isPrintingAll || isGeneratingPdf || window.matchMedia('print').matches ? ((isPrintingAll || isGeneratingPdf) ? filtered : pageRows) : pageRows).map((row, idx) => {
+                    const statusVal = Object.entries(row).find(([h, v]) => /status|pendente|situac/i.test(h))?.[1]?.toLowerCase() || "";
+                    const dateVal = Object.entries(row).find(([h, v]) => /data|entrada|pedido/i.test(h))?.[1] || "";
+                    const dateObj = parseDate(dateVal);
+                    const isOverdue = dateObj && (new Date().getTime() - dateObj.getTime() > 24 * 60 * 60 * 1000) && (statusVal.includes("pendente") || statusVal.includes("atrasad"));
+
+                    return (
+                      <motion.tr
+                        key={`${safePage}-${idx}`}
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.15, delay: idx * 0.01 }}
+                        className={cn(
+                          "border-t hover:bg-muted/30 transition-colors",
+                          isOverdue && "bg-destructive/10 dark:bg-destructive/20 border-l-4 border-l-destructive"
+                        )}
+                      >
                       {headers.map((h) => {
                         const v = row[h] ?? "";
                         return (
