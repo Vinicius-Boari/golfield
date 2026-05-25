@@ -361,9 +361,6 @@ function Sidebar({
                     <Circle className="h-3.5 w-3.5 shrink-0 opacity-40" />
                   )}
                   <span className="truncate flex-1 text-left">{s.title.trim()}</span>
-                  <span className={cn("text-[10px] tabular-nums", active ? "opacity-80" : "opacity-50")}>
-                    {s.rowCount}
-                  </span>
                 </button>
               );
             })}
