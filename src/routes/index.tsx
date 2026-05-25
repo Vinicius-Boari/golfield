@@ -413,7 +413,7 @@ function DashboardContent({
       }
     }
     return r;
-  }, [validRows, search, filters, dateField, dateFrom, dateTo, sortKey, sortDir, cols, showOnlyEnvio, showOnlyNF, headers]);
+  }, [validRows, search, filters, dateFromEntrada, dateToEntrada, dateFromSaida, dateToSaida, sortKey, sortDir, cols, showOnlyEnvio, showOnlyNF, headers]);
 
   // KPIs
   const totalRecords = filtered.length;
