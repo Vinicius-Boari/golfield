@@ -92,7 +92,7 @@ const CHART_COLORS = [
   "oklch(0.68 0.2 235)",
 ];
 
-const ALLOWED_IP = "35.233.82.85"; // Substitua pelo seu IP se necessário
+const ALLOWED_IP = "2804:d4b:a020:6c00:99da:249:5e51:2e82"; // IP atualizado conforme a imagem do erro
 
 function NetworkGuard({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(() => {
