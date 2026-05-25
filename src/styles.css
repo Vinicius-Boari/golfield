@@ -3,6 +3,7 @@
 }
 
 @media print {
+  /* Hide UI elements */
   aside, 
   header, 
   .no-print,
@@ -10,13 +11,20 @@
   .badge,
   .theme-toggle,
   input,
-  select {
+  select,
+  .mb-6,
+  .flex-wrap,
+  .border-t.bg-muted\/20 {
     display: none !important;
   }
   
-  body {
+  /* Reset body and layouts */
+  body, html {
     background: white !important;
     color: black !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
     padding: 0 !important;
     margin: 0 !important;
   }
@@ -28,34 +36,79 @@
   main {
     padding: 0 !important;
     margin: 0 !important;
+    width: 100% !important;
   }
 
+  /* Force table visibility */
   .glass {
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
     backdrop-filter: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
   }
 
-  .rounded-2xl, .rounded-xl {
+  .rounded-2xl, .rounded-xl, .rounded-xl.border {
     border-radius: 0 !important;
+    border: none !important;
+    overflow: visible !important;
   }
 
+  .overflow-x-auto {
+    overflow: visible !important;
+  }
+
+  /* Table styles */
   table {
     width: 100% !important;
     border-collapse: collapse !important;
+    table-layout: auto !important;
   }
 
-  th, td {
-    border: 1px solid #ddd !important;
-    padding: 8px !important;
-    font-size: 10px !important;
-    white-space: normal !important;
-    word-break: break-word !important;
+  thead {
+    display: table-header-group !important;
   }
 
   tr {
     page-break-inside: avoid !important;
+    border-bottom: 1px solid #eee !important;
+  }
+
+  th {
+    background-color: #f8fafc !important;
+    color: #475569 !important;
+    font-weight: bold !important;
+    text-align: left !important;
+    padding: 10px 8px !important;
+    font-size: 10px !important;
+    border: 1px solid #e2e8f0 !important;
+    text-transform: uppercase !important;
+  }
+
+  td {
+    padding: 8px !important;
+    font-size: 10px !important;
+    border: 1px solid #e2e8f0 !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    vertical-align: middle !important;
+  }
+
+  /* KPI cards in print */
+  .grid-cols-2.lg\:grid-cols-4 {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 10px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .grid-cols-2.lg\:grid-cols-4 > div {
+    flex: 1 !important;
+    border: 1px solid #e2e8f0 !important;
+    padding: 10px !important;
+    min-height: auto !important;
   }
 
   .ambient-bg {
