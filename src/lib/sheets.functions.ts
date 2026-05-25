@@ -15,6 +15,27 @@ function headers() {
   };
 }
 
+async function fetchWithRetry(url: string, label: string, attempts = 4): Promise<Response> {
+  let lastErr = "";
+  for (let i = 0; i < attempts; i++) {
+    try {
+      const res = await fetch(url, { headers: headers() });
+      if (res.ok) return res;
+      if ([502, 503, 504, 429].includes(res.status) && i < attempts - 1) {
+        lastErr = `HTTP ${res.status}`;
+        await new Promise((r) => setTimeout(r, 500 * Math.pow(2, i)));
+        continue;
+      }
+      throw new Error(`${label} failed ${res.status}: ${(await res.text()).slice(0, 200)}`);
+    } catch (e) {
+      if (i === attempts - 1) throw e;
+      lastErr = (e as Error).message;
+      await new Promise((r) => setTimeout(r, 500 * Math.pow(2, i)));
+    }
+  }
+  throw new Error(`${label} failed after ${attempts} attempts: ${lastErr}`);
+}
+
 export type SheetMeta = { id: number; title: string; rowCount: number };
 
 export const listSheets = createServerFn({ method: "GET" }).handler(async () => {
