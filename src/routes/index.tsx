@@ -908,9 +908,6 @@ function DashboardContent({
                 Sincronizado {new Date(lastUpdated).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
               </span>
             </div>
-            <Button size="sm" variant="ghost" onClick={refetch} className="h-8 w-8 p-0">
-              <RefreshCw className={cn("h-4 w-4", isFetching && "animate-spin")} />
-            </Button>
             <Badge variant="secondary" className="font-medium whitespace-nowrap px-3 py-1 rounded-full bg-primary/10 text-primary border-none">
               {filtered.length.toLocaleString("pt-BR")} registros
             </Badge>
