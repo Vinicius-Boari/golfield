@@ -126,10 +126,17 @@ function DashboardPage() {
         <div className="flex-1 min-w-0 lg:pl-72">
           <Header onMenu={() => setSidebarOpen(true)} sheetTitle={current} />
           <main className="px-4 md:px-8 pb-16 pt-6 space-y-6">
-            {current ? (
+            {sheetsQuery.isError ? (
+              <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-6 text-sm text-destructive">
+                Erro ao conectar: {(sheetsQuery.error as Error).message}
+              </div>
+            ) : current ? (
               <SheetDashboard sheetTitle={current} />
             ) : (
-              <div className="text-muted-foreground text-sm">Carregando planilhas…</div>
+              <div className="text-muted-foreground text-sm flex items-center gap-2">
+                <RefreshCw className="h-4 w-4 animate-spin" />
+                Carregando planilhas…
+              </div>
             )}
           </main>
         </div>
