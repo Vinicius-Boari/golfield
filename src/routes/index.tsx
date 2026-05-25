@@ -966,7 +966,7 @@ function DashboardContent({
             </table>
           </div>
 
-          <div className="flex items-center justify-between gap-2 px-4 py-3 border-t bg-muted/20 text-xs">
+          <div className="flex items-center justify-between gap-2 px-4 py-3 border-t bg-muted/20 text-xs no-print">
             <div className="text-muted-foreground">
               Página {safePage} de {totalPages}
             </div>
