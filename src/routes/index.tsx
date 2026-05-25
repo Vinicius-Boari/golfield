@@ -376,10 +376,10 @@ function DashboardContent({
     if (dateFromEntrada || dateToEntrada) {
       const from = dateFromEntrada ? new Date(dateFromEntrada) : null;
       const to = dateToEntrada ? new Date(dateToEntrada) : null;
-      const header = headers.find(h => h.toUpperCase().trim() === "ENVIO DO P");
-      if (header) {
+      const headerEntrada = headers.find(h => h.toUpperCase().trim() === "ENVIO DO P");
+      if (headerEntrada) {
         r = r.filter((row) => {
-          const d = parseDate(row[header] ?? "");
+          const d = parseDate(row[headerEntrada] ?? "");
           if (!d) return false;
           if (from && d < from) return false;
           if (to && d > to) return false;
