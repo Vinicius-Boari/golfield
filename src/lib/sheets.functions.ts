@@ -15,14 +15,34 @@ function headers() {
   };
 }
 
+async function fetchWithRetry(url: string, label: string, attempts = 4): Promise<Response> {
+  let lastErr = "";
+  for (let i = 0; i < attempts; i++) {
+    try {
+      const res = await fetch(url, { headers: headers() });
+      if (res.ok) return res;
+      if ([502, 503, 504, 429].includes(res.status) && i < attempts - 1) {
+        lastErr = `HTTP ${res.status}`;
+        await new Promise((r) => setTimeout(r, 500 * Math.pow(2, i)));
+        continue;
+      }
+      throw new Error(`${label} failed ${res.status}: ${(await res.text()).slice(0, 200)}`);
+    } catch (e) {
+      if (i === attempts - 1) throw e;
+      lastErr = (e as Error).message;
+      await new Promise((r) => setTimeout(r, 500 * Math.pow(2, i)));
+    }
+  }
+  throw new Error(`${label} failed after ${attempts} attempts: ${lastErr}`);
+}
+
 export type SheetMeta = { id: number; title: string; rowCount: number };
 
 export const listSheets = createServerFn({ method: "GET" }).handler(async () => {
-  const res = await fetch(
+  const res = await fetchWithRetry(
     `${GATEWAY}/spreadsheets/${SPREADSHEET_ID}?fields=sheets.properties,properties.title`,
-    { headers: headers() },
+    "Sheets list",
   );
-  if (!res.ok) throw new Error(`Sheets list failed ${res.status}: ${await res.text()}`);
   const j: any = await res.json();
   const sheets: SheetMeta[] = (j.sheets ?? []).map((s: any) => ({
     id: s.properties.sheetId,
@@ -43,8 +63,7 @@ export const getSheetData = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     const range = `'${data.title.replace(/'/g, "''")}'!A1:Z10000`;
     const url = `${GATEWAY}/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(range)}`;
-    const res = await fetch(url, { headers: headers() });
-    if (!res.ok) throw new Error(`Values fetch failed ${res.status}: ${await res.text()}`);
+    const res = await fetchWithRetry(url, "Values fetch");
     const j: any = await res.json();
     const values: string[][] = j.values ?? [];
     if (values.length === 0) {
