@@ -483,7 +483,7 @@ function DashboardContent({
           useCORS: true,
           letterRendering: true,
         },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' as const }
       };
 
       try {
