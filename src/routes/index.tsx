@@ -39,9 +39,12 @@ import {
   Menu,
   X,
   Box,
+  Lock,
+  WifiOff,
 } from "lucide-react";
 
 import { getSheetData, listSheets } from "@/lib/sheets.functions";
+import { useEffect } from "react";
 import {
   classifyColumns,
   countBy,
