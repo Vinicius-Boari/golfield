@@ -466,7 +466,8 @@ function DashboardContent({
   const reportRef = useRef<HTMLDivElement>(null);
 
   const handleDownloadPdf = async (all: boolean) => {
-    if (all) setIsGeneratingPdf(true);
+    setIsGeneratingPdf(true);
+    if (all) setIsPrintingAll(true);
     setShowPdfOptions(false);
     
     // Wait for state update and re-render
