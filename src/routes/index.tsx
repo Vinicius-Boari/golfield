@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef } from "react";
+import html2pdf from "html2pdf.js";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Bar,
