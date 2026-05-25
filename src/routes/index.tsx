@@ -549,9 +549,14 @@ function DashboardContent({
                   </SelectTrigger>
                   <SelectContent className="max-h-[300px]">
                     <SelectItem value="__all__">Todos</SelectItem>
-                    {options.map((o) => (
-                      <SelectItem key={o} value={o}>{o}</SelectItem>
-                    ))}
+                    {options.map((o) => {
+                      let display = o;
+                      if (o.toUpperCase() === "TRUE") display = "SIM";
+                      if (o.toUpperCase() === "FALSE") display = "NÃO";
+                      return (
+                        <SelectItem key={o} value={o}>{display}</SelectItem>
+                      );
+                    })}
                   </SelectContent>
                 </Select>
               </div>
