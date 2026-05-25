@@ -221,7 +221,6 @@ function DashboardPage() {
 
   const [activeSheet, setActiveSheet] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isSheetMode, setIsSheetMode] = useState(false);
   
   const availableSheets = useMemo(() => {
     if (!isAuthenticated) return [];
