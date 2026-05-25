@@ -864,7 +864,6 @@ function DashboardContent({
               )}
             </AnimatePresence>
           </div>
-          </div>
 
           <Button
             size="sm"
