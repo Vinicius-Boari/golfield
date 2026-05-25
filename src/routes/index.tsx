@@ -491,6 +491,7 @@ function DashboardContent({
         await html2pdf().set(opt).from(element).save();
       } finally {
         setIsGeneratingPdf(false);
+        setIsPrintingAll(false);
       }
     }, 500);
   };
