@@ -118,6 +118,34 @@
   }
 }
 
+.pdf-mode {
+  background: white !important;
+  color: black !important;
+  padding: 20px !important;
+}
+
+.pdf-mode table {
+  color: black !important;
+  border: 1px solid black !important;
+}
+
+.pdf-mode th, .pdf-mode td {
+  color: black !important;
+  border: 1px solid black !important;
+  padding: 4px 6px !important;
+  font-size: 10px !important;
+}
+
+.pdf-mode .glass {
+  background: white !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.pdf-mode tr {
+  border-bottom: 1px solid #000 !important;
+}
+
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
