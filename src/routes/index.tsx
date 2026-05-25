@@ -543,13 +543,23 @@ function DashboardContent({
               <Input
                 type="date"
                 value={dateFrom}
-                onChange={(e) => setDateFrom(e.target.value)}
+                onChange={(e) => {
+                  setDateFrom(e.target.value);
+                  setPage(1);
+                  const h = headers.find(h => h.toUpperCase().trim() === "ENVIO DO P");
+                  if (h) setDateField(h);
+                }}
                 className="h-10 rounded-xl border-muted-foreground/20"
               />
               <Input
                 type="date"
                 value={dateTo}
-                onChange={(e) => setDateTo(e.target.value)}
+                onChange={(e) => {
+                  setDateTo(e.target.value);
+                  setPage(1);
+                  const h = headers.find(h => h.toUpperCase().trim() === "ENVIO DO P");
+                  if (h) setDateField(h);
+                }}
                 className="h-10 rounded-xl border-muted-foreground/20"
               />
             </div>
