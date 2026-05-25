@@ -370,6 +370,14 @@ function DashboardContent({
     }
     for (const [k, v] of Object.entries(filters)) {
       if (!v || v === "__all__") continue;
+      if (v === "__has_nf__") {
+        r = r.filter((row) => (row[k] ?? "").trim() !== "");
+        continue;
+      }
+      if (v === "__no_nf__") {
+        r = r.filter((row) => (row[k] ?? "").trim() === "");
+        continue;
+      }
       r = r.filter((row) => (row[k] ?? "").trim() === v);
     }
     
@@ -545,7 +553,7 @@ function DashboardContent({
             </div>
           </div>
 
-          {["Liberado", "Impresso", "Envio", "R.Separação", "Conferencia", "Entregador"].map((colName) => {
+          {["Liberado", "Impresso", "Envio", "R.Separação", "Conferencia", "Entregador", "NF"].map((colName) => {
             const actualHeader = headers.find(h => h.toLowerCase().trim() === colName.toLowerCase().trim());
             if (!actualHeader) return null;
 
@@ -570,14 +578,21 @@ function DashboardContent({
                   </SelectTrigger>
                   <SelectContent className="max-h-[300px]">
                     <SelectItem value="__all__">Todos</SelectItem>
-                    {options.map((o) => {
-                      let display = o;
-                      if (o.toUpperCase() === "TRUE") display = "SIM";
-                      if (o.toUpperCase() === "FALSE") display = "NÃO";
-                      return (
-                        <SelectItem key={o} value={o}>{display}</SelectItem>
-                      );
-                    })}
+                    {colName.toUpperCase() === "NF" ? (
+                      <>
+                        <SelectItem value="__has_nf__">SIM</SelectItem>
+                        <SelectItem value="__no_nf__">NÃO</SelectItem>
+                      </>
+                    ) : (
+                      options.map((o) => {
+                        let display = o;
+                        if (o.toUpperCase() === "TRUE") display = "SIM";
+                        if (o.toUpperCase() === "FALSE") display = "NÃO";
+                        return (
+                          <SelectItem key={o} value={o}>{display}</SelectItem>
+                        );
+                      })
+                    )}
                   </SelectContent>
                 </Select>
               </div>
