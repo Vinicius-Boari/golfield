@@ -15,7 +15,7 @@ function headers() {
   };
 }
 
-async function fetchWithRetry(url: string, label: string, attempts = 4): Promise<Response> {
+async function fetchWithRetry(url: string, label: string, attempts = 5): Promise<Response> {
   let lastErr = "";
   for (let i = 0; i < attempts; i++) {
     try {
@@ -23,7 +23,9 @@ async function fetchWithRetry(url: string, label: string, attempts = 4): Promise
       if (res.ok) return res;
       if ([502, 503, 504, 429].includes(res.status) && i < attempts - 1) {
         lastErr = `HTTP ${res.status}`;
-        await new Promise((r) => setTimeout(r, 500 * Math.pow(2, i)));
+        // Longer backoff for 429
+        const base = res.status === 429 ? 2000 : 500;
+        await new Promise((r) => setTimeout(r, base * Math.pow(2, i)));
         continue;
       }
       throw new Error(`${label} failed ${res.status}: ${(await res.text()).slice(0, 200)}`);
@@ -36,14 +38,34 @@ async function fetchWithRetry(url: string, label: string, attempts = 4): Promise
   throw new Error(`${label} failed after ${attempts} attempts: ${lastErr}`);
 }
 
+// Simple in-memory cache with TTL to avoid hitting Sheets API rate limits
+const cache = new Map<string, { at: number; data: any }>();
+const TTL_MS = 30_000; // 30s cache
+
+async function cachedJSON(key: string, url: string, label: string) {
+  const hit = cache.get(key);
+  const now = Date.now();
+  if (hit && now - hit.at < TTL_MS) return hit.data;
+  try {
+    const res = await fetchWithRetry(url, label);
+    const j = await res.json();
+    cache.set(key, { at: now, data: j });
+    return j;
+  } catch (e) {
+    // On rate limit, return stale cache if available
+    if (hit) return hit.data;
+    throw e;
+  }
+}
+
 export type SheetMeta = { id: number; title: string; rowCount: number };
 
 export const listSheets = createServerFn({ method: "GET" }).handler(async () => {
-  const res = await fetchWithRetry(
+  const j: any = await cachedJSON(
+    "list",
     `${GATEWAY}/spreadsheets/${SPREADSHEET_ID}?fields=sheets.properties,properties.title`,
     "Sheets list",
   );
-  const j: any = await res.json();
   const sheets: SheetMeta[] = (j.sheets ?? []).map((s: any) => ({
     id: s.properties.sheetId,
     title: s.properties.title,
@@ -62,9 +84,8 @@ export const getSheetData = createServerFn({ method: "GET" })
   .inputValidator((d) => z.object({ title: z.string().min(1).max(200) }).parse(d))
   .handler(async ({ data }) => {
     const range = `'${data.title.replace(/'/g, "''")}'!A1:Z10000`;
-    const url = `${GATEWAY}/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(range)}`;
-    const res = await fetchWithRetry(url, "Values fetch");
-    const j: any = await res.json();
+    const url = `${GATEWAY}/spreadsheets/${SPREADSHEET_ID}/values/${range}`;
+    const j: any = await cachedJSON(`data:${data.title}`, url, "Values fetch");
     const values: string[][] = j.values ?? [];
     if (values.length === 0) {
       return { title: data.title, headers: [], rows: [] } satisfies SheetData;
@@ -77,7 +98,6 @@ export const getSheetData = createServerFn({ method: "GET" })
       });
       return o;
     });
-    // drop empty rows
     const filtered = rows.filter((r) => Object.values(r).some((v) => v && v.trim() !== ""));
     return { title: data.title, headers: rawHeaders, rows: filtered } satisfies SheetData;
   });

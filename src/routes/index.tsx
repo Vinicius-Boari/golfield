@@ -91,7 +91,7 @@ function DashboardPage() {
   const sheetsQuery = useQuery({
     queryKey: ["sheets"],
     queryFn: () => listSheets(),
-    refetchInterval: 30_000,
+    refetchInterval: 60_000,
   });
 
   const [activeSheet, setActiveSheet] = useState<string | null>(null);
@@ -262,7 +262,7 @@ function SheetDashboard({ sheetTitle }: { sheetTitle: string }) {
   const dataQuery = useQuery({
     queryKey: ["sheet", sheetTitle],
     queryFn: () => getSheetData({ data: { title: sheetTitle } }),
-    refetchInterval: 10_000,
+    refetchInterval: 30_000,
   });
 
   if (dataQuery.isLoading) return <LoadingSkeleton />;
