@@ -313,8 +313,33 @@ function DashboardContent({
   const [sortKey, setSortKey] = useState<string | null>(null);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
 
+  const validRows = useMemo(() => {
+    const pedidoCol = headers.find((h) => {
+      const low = h.toLowerCase().trim();
+      return (
+        low === "pedido" ||
+        low === "nº pedido" ||
+        low === "nº do pedido" ||
+        low === "numero do pedido" ||
+        low === "código" ||
+        low === "id" ||
+        low === "venda" ||
+        low.startsWith("nº")
+      );
+    });
+
+    if (pedidoCol) {
+      return rows.filter((row) => {
+        const val = (row[pedidoCol] ?? "").trim();
+        // Deve conter pelo menos um dígito para ser considerado um pedido válido
+        return val !== "" && /\d/.test(val);
+      });
+    }
+    return rows;
+  }, [rows, headers]);
+
   const filtered = useMemo(() => {
-    let r = rows;
+    let r = validRows;
     if (search.trim()) {
       const q = search.toLowerCase();
       r = r.filter((row) => Object.values(row).some((v) => v.toLowerCase().includes(q)));
@@ -351,11 +376,11 @@ function DashboardContent({
       });
     }
     return r;
-  }, [rows, search, filters, dateField, dateFrom, dateTo, sortKey, sortDir, cols]);
+  }, [validRows, search, filters, dateField, dateFrom, dateTo, sortKey, sortDir, cols]);
 
   // KPIs
   const totalRecords = filtered.length;
-  const previousCount = rows.length;
+  const previousCount = validRows.length;
   const sumCol = cols.numericCols[0];
   const sumValue = sumCol ? filtered.reduce((acc, r) => acc + toNumber(r[sumCol]), 0) : null;
   const uniqueClients = cols.categoricalCols[0]
@@ -582,7 +607,7 @@ function DashboardContent({
 
           {cols.categoricalCols.slice(0, 3).map((c) => {
             const options = Array.from(
-              new Set(rows.map((r) => (r[c] ?? "").trim()).filter(Boolean)),
+              new Set(validRows.map((r) => (r[c] ?? "").trim()).filter(Boolean)),
             ).slice(0, 60);
             return (
               <Select
@@ -641,7 +666,7 @@ function DashboardContent({
             <Download className="h-3.5 w-3.5 mr-1" /> CSV
           </Button>
           <Badge variant="secondary" className="ml-auto">
-            {filtered.length.toLocaleString("pt-BR")} de {rows.length.toLocaleString("pt-BR")} registros
+            {filtered.length.toLocaleString("pt-BR")} de {validRows.length.toLocaleString("pt-BR")} registros
           </Badge>
         </div>
 
