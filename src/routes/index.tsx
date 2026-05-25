@@ -614,6 +614,20 @@ function DashboardContent({
         <div className="flex flex-wrap items-center gap-2 mb-4 pt-2 border-t border-muted/30">
           <Button
             size="sm"
+            variant={showOnlyNF ? "default" : "outline"}
+            onClick={() => {
+              setShowOnlyNF(!showOnlyNF);
+              setPage(1);
+            }}
+            className={cn(
+              "h-8 px-4 rounded-lg border-muted-foreground/20 hover:bg-muted",
+              showOnlyNF && "bg-indigo-600 hover:bg-indigo-700 text-white border-transparent"
+            )}
+          >
+            Com NF
+          </Button>
+          <Button
+            size="sm"
             variant="outline"
             onClick={resetFilters}
             className="h-8 px-4 rounded-lg border-muted-foreground/20 hover:bg-muted"
