@@ -313,23 +313,31 @@ function DashboardContent({
   const [sortKey, setSortKey] = useState<string | null>(null);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
 
-  const filtered = useMemo(() => {
-    let r = rows;
-
-    // Filter out rows without a valid order number if a "pedido" column exists
+  const validRows = useMemo(() => {
     const pedidoCol = headers.find((h) => {
       const low = h.toLowerCase().trim();
-      return low === "pedido" || low === "nº pedido" || low === "numero do pedido";
+      return (
+        low === "pedido" ||
+        low === "nº pedido" ||
+        low === "nº do pedido" ||
+        low === "numero do pedido" ||
+        low === "código" ||
+        low === "id"
+      );
     });
 
     if (pedidoCol) {
-      r = r.filter((row) => {
+      return rows.filter((row) => {
         const val = (row[pedidoCol] ?? "").trim();
-        // Must exist and contain at least one digit
+        // Deve conter pelo menos um dígito para ser considerado um pedido válido
         return val !== "" && /\d/.test(val);
       });
     }
+    return rows;
+  }, [rows, headers]);
 
+  const filtered = useMemo(() => {
+    let r = validRows;
     if (search.trim()) {
       const q = search.toLowerCase();
       r = r.filter((row) => Object.values(row).some((v) => v.toLowerCase().includes(q)));
@@ -366,11 +374,11 @@ function DashboardContent({
       });
     }
     return r;
-  }, [rows, search, filters, dateField, dateFrom, dateTo, sortKey, sortDir, cols]);
+  }, [validRows, search, filters, dateField, dateFrom, dateTo, sortKey, sortDir, cols]);
 
   // KPIs
   const totalRecords = filtered.length;
-  const previousCount = rows.length;
+  const previousCount = validRows.length;
   const sumCol = cols.numericCols[0];
   const sumValue = sumCol ? filtered.reduce((acc, r) => acc + toNumber(r[sumCol]), 0) : null;
   const uniqueClients = cols.categoricalCols[0]
