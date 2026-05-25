@@ -590,24 +590,30 @@ function DashboardContent({
               Data Entrada
             </label>
             <div className="flex gap-2">
-              <Input
-                type="date"
-                value={dateFromEntrada}
-                onChange={(e) => {
-                  setDateFromEntrada(e.target.value);
-                  setPage(1);
-                }}
-                className="h-10 rounded-xl border-muted-foreground/20"
-              />
-              <Input
-                type="date"
-                value={dateToEntrada}
-                onChange={(e) => {
-                  setDateToEntrada(e.target.value);
-                  setPage(1);
-                }}
-                className="h-10 rounded-xl border-muted-foreground/20"
-              />
+              <div className="relative flex-1">
+                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
+                <Input
+                  type="date"
+                  value={dateFromEntrada}
+                  onChange={(e) => {
+                    setDateFromEntrada(e.target.value);
+                    setPage(1);
+                  }}
+                  className="h-10 pl-9 rounded-xl border-muted-foreground/20"
+                />
+              </div>
+              <div className="relative flex-1">
+                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
+                <Input
+                  type="date"
+                  value={dateToEntrada}
+                  onChange={(e) => {
+                    setDateToEntrada(e.target.value);
+                    setPage(1);
+                  }}
+                  className="h-10 pl-9 rounded-xl border-muted-foreground/20"
+                />
+              </div>
             </div>
           </div>
 
@@ -617,24 +623,30 @@ function DashboardContent({
               Data Saida
             </label>
             <div className="flex gap-2">
-              <Input
-                type="date"
-                value={dateFromSaida}
-                onChange={(e) => {
-                  setDateFromSaida(e.target.value);
-                  setPage(1);
-                }}
-                className="h-10 rounded-xl border-muted-foreground/20"
-              />
-              <Input
-                type="date"
-                value={dateToSaida}
-                onChange={(e) => {
-                  setDateToSaida(e.target.value);
-                  setPage(1);
-                }}
-                className="h-10 rounded-xl border-muted-foreground/20"
-              />
+              <div className="relative flex-1">
+                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
+                <Input
+                  type="date"
+                  value={dateFromSaida}
+                  onChange={(e) => {
+                    setDateFromSaida(e.target.value);
+                    setPage(1);
+                  }}
+                  className="h-10 pl-9 rounded-xl border-muted-foreground/20"
+                />
+              </div>
+              <div className="relative flex-1">
+                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
+                <Input
+                  type="date"
+                  value={dateToSaida}
+                  onChange={(e) => {
+                    setDateToSaida(e.target.value);
+                    setPage(1);
+                  }}
+                  className="h-10 pl-9 rounded-xl border-muted-foreground/20"
+                />
+              </div>
             </div>
           </div>
         </div>
