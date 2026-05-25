@@ -545,7 +545,7 @@ function DashboardContent({
             </div>
           </div>
 
-          {["Liberado", "Impresso", "Envio", "R.Separação", "Conferencia", "Entregador"].map((colName) => {
+          {["Liberado", "Impresso", "Envio", "R.Separação", "Conferencia", "Entregador", "NF"].map((colName) => {
             const actualHeader = headers.find(h => h.toLowerCase().trim() === colName.toLowerCase().trim());
             if (!actualHeader) return null;
 
