@@ -63,8 +63,7 @@ export const getSheetData = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     const range = `'${data.title.replace(/'/g, "''")}'!A1:Z10000`;
     const url = `${GATEWAY}/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(range)}`;
-    const res = await fetch(url, { headers: headers() });
-    if (!res.ok) throw new Error(`Values fetch failed ${res.status}: ${await res.text()}`);
+    const res = await fetchWithRetry(url, "Values fetch");
     const j: any = await res.json();
     const values: string[][] = j.values ?? [];
     if (values.length === 0) {
