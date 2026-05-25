@@ -19,7 +19,7 @@
   }
   
   /* Reset body and layouts */
-  body, html {
+  body, html, .pdf-export {
     background: white !important;
     color: black !important;
     width: 100% !important;
