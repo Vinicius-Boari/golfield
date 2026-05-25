@@ -482,88 +482,8 @@ function DashboardContent({
 
       {/* Filters + Table */}
       <div className="glass rounded-2xl p-4 md:p-6 shadow-xl shadow-black/5">
-        <div className="flex flex-wrap items-center gap-3 mb-4">
-          <div className="flex items-center gap-2 text-sm font-semibold">
-            <Filter className="h-4 w-4 text-muted-foreground" />
-            Filtros avançados
-          </div>
-          <div className="ml-auto flex items-center gap-2 text-xs text-muted-foreground">
-            <RefreshCw className={cn("h-3.5 w-3.5", isFetching && "animate-spin")} />
-            Atualizado{" "}
-            {new Date(lastUpdated).toLocaleTimeString("pt-BR", {
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit",
-            })}
-            <Button size="sm" variant="ghost" onClick={refetch} className="h-7 px-2">
-              Atualizar
-            </Button>
-          </div>
-        </div>
 
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4 mb-4">
-          <div className="relative lg:col-span-2">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Pesquisa inteligente em todos os campos…"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-              className="pl-9 h-10"
-            />
-          </div>
-
-          {cols.categoricalCols.slice(0, 3).map((c) => {
-            const options = Array.from(
-              new Set(validRows.map((r) => (r[c] ?? "").trim()).filter(Boolean)),
-            ).slice(0, 60);
-            return (
-              <Select
-                key={c}
-                value={filters[c] ?? "__all__"}
-                onValueChange={(v) => {
-                  setFilters((f) => ({ ...f, [c]: v }));
-                  setPage(1);
-                }}
-              >
-                <SelectTrigger className="h-10">
-                  <SelectValue placeholder={c} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__all__">Todos · {c}</SelectItem>
-                  {options.map((o) => (
-                    <SelectItem key={o} value={o}>
-                      {o}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            );
-          })}
-
-          {cols.dateCols.length > 0 && (
-            <>
-              <Select value={dateField} onValueChange={setDateField}>
-                <SelectTrigger className="h-10">
-                  <SelectValue placeholder="Campo de data" />
-                </SelectTrigger>
-                <SelectContent>
-                  {cols.dateCols.map((d) => (
-                    <SelectItem key={d} value={d}>
-                      {d}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="h-10" />
-              <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="h-10" />
-            </>
-          )}
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2 mb-3">
+        <div className="flex flex-wrap items-center gap-2 mb-4">
           <Button
             size="sm"
             variant={showOnlyEnvio ? "default" : "outline"}
@@ -571,7 +491,7 @@ function DashboardContent({
               setShowOnlyEnvio(!showOnlyEnvio);
               setPage(1);
             }}
-            className={cn("h-8", showOnlyEnvio && "bg-blue-600 hover:bg-blue-700")}
+            className={cn("h-8 px-4", showOnlyEnvio && "bg-blue-600 hover:bg-blue-700")}
           >
             Data de Envio
           </Button>
@@ -582,7 +502,7 @@ function DashboardContent({
               setShowOnlyNF(!showOnlyNF);
               setPage(1);
             }}
-            className={cn("h-8", showOnlyNF && "bg-indigo-600 hover:bg-indigo-700")}
+            className={cn("h-8 px-4", showOnlyNF && "bg-indigo-600 hover:bg-indigo-700")}
           >
             Com NF
           </Button>
@@ -597,9 +517,21 @@ function DashboardContent({
           >
             <Download className="h-3.5 w-3.5 mr-1" /> CSV
           </Button>
-          <Badge variant="secondary" className="ml-auto">
-            {filtered.length.toLocaleString("pt-BR")} de {validRows.length.toLocaleString("pt-BR")} registros
-          </Badge>
+
+          <div className="ml-auto flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-2 text-[11px] text-muted-foreground">
+              <RefreshCw className={cn("h-3 w-3", isFetching && "animate-spin")} />
+              <span>
+                Sincronizado {new Date(lastUpdated).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
+              </span>
+            </div>
+            <Button size="sm" variant="ghost" onClick={refetch} className="h-8 w-8 p-0">
+              <RefreshCw className={cn("h-4 w-4", isFetching && "animate-spin")} />
+            </Button>
+            <Badge variant="secondary" className="font-medium whitespace-nowrap">
+              {filtered.length.toLocaleString("pt-BR")} registros
+            </Badge>
+          </div>
         </div>
 
         <div className="rounded-xl border bg-card overflow-hidden">
