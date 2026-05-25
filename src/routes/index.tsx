@@ -539,8 +539,6 @@ function DashboardContent({
                 />
               </AreaChart>
             </ResponsiveContainer>
-              </AreaChart>
-            </ResponsiveContainer>
           ) : (
             <EmptyChart />
           )}
