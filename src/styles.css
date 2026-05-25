@@ -63,8 +63,8 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(0.25 0.08 25);
-  --foreground: oklch(0.98 0.01 25);
+  --background: oklch(0.25 0.08 200);
+  --foreground: oklch(0.98 0.01 200);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
@@ -98,8 +98,8 @@
 }
 
 .dark {
-  --background: oklch(0.15 0.06 25);
-  --foreground: oklch(0.98 0.01 25);
+  --background: oklch(0.15 0.06 200);
+  --foreground: oklch(0.98 0.01 200);
   --card: oklch(0.208 0.042 265.755);
   --card-foreground: oklch(0.984 0.003 247.858);
   --popover: oklch(0.208 0.042 265.755);
@@ -165,7 +165,7 @@
   }
   .ambient-bg {
     background-image:
-      radial-gradient(circle at 15% 0%, color-mix(in oklab, oklch(0.35 0.15 25) 30%, transparent), transparent 50%),
-      radial-gradient(circle at 85% 10%, color-mix(in oklab, oklch(0.2 0.1 25) 25%, transparent), transparent 60%);
+      radial-gradient(circle at 15% 0%, color-mix(in oklab, oklch(0.35 0.15 200) 30%, transparent), transparent 50%),
+      radial-gradient(circle at 85% 10%, color-mix(in oklab, oklch(0.2 0.1 200) 25%, transparent), transparent 60%);
   }
 }
