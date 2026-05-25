@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-export const SPREADSHEET_ID = "1LoDg7FS0Aadc9WX-lPYHF8QNS3dfPWelAVPBccH-q4c";
+const SPREADSHEET_ID = "1LoDg7FS0Aadc9WX-lPYHF8QNS3dfPWelAVPBccH-q4c";
 const GATEWAY = "https://connector-gateway.lovable.dev/google_sheets/v4";
 
 function headers() {

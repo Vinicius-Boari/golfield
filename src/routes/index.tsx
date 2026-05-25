@@ -45,10 +45,9 @@ import {
   Eye,
   EyeOff,
   ExternalLink,
-  Table,
 } from "lucide-react";
 
-import { getSheetData, listSheets, SPREADSHEET_ID } from "@/lib/sheets.functions";
+import { getSheetData, listSheets } from "@/lib/sheets.functions";
 
 import {
   classifyColumns,
@@ -222,7 +221,6 @@ function DashboardPage() {
 
   const [activeSheet, setActiveSheet] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isSheetMode, setIsSheetMode] = useState(false);
   
   const availableSheets = useMemo(() => {
     if (!isAuthenticated) return [];
@@ -237,10 +235,6 @@ function DashboardPage() {
   }
 
   const current = activeSheet ?? availableSheets[availableSheets.length - 1]?.title ?? sheetsQuery.data?.sheets[sheetsQuery.data.sheets.length - 1]?.title ?? null;
-
-  const currentSheetObj = useMemo(() => {
-    return (sheetsQuery.data?.sheets ?? []).find(s => s.title === current);
-  }, [sheetsQuery.data, current]);
 
   return (
     <div className="min-h-screen bg-background text-foreground ambient-bg">
@@ -259,41 +253,9 @@ function DashboardPage() {
         />
 
         <div className="flex-1 min-w-0 lg:pl-72">
-          <Header 
-            onMenu={() => setSidebarOpen(true)} 
-            sheetTitle={current} 
-            isSheetMode={isSheetMode}
-            onToggleMode={() => setIsSheetMode(!isSheetMode)}
-            gid={currentSheetObj?.id}
-          />
+          <Header onMenu={() => setSidebarOpen(true)} sheetTitle={current} />
           <main className="px-4 md:px-8 pb-16 pt-6 space-y-6">
-            {isSheetMode ? (
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="w-full h-[calc(100vh-140px)] rounded-2xl overflow-hidden border border-white/10 glass shadow-2xl relative"
-              >
-                <iframe 
-                  src={`https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/edit${currentSheetObj?.id !== undefined ? `#gid=${currentSheetObj.id}` : ''}&rm=minimal`}
-                  className="w-full h-full bg-white"
-                  title="Google Sheet"
-                  allow="autoplay; encrypted-media"
-                  allowFullScreen
-                />
-                <div className="absolute bottom-4 right-4 flex gap-2">
-                   <Button variant="secondary" size="sm" className="shadow-lg" asChild>
-                     <a 
-                       href={`https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/edit${currentSheetObj?.id !== undefined ? `#gid=${currentSheetObj.id}` : ''}`} 
-                       target="_blank" 
-                       rel="noopener noreferrer"
-                     >
-                       <ExternalLink className="h-4 w-4 mr-2" />
-                       Abrir em Tela Cheia
-                     </a>
-                   </Button>
-                </div>
-              </motion.div>
-            ) : sheetsQuery.isError ? (
+            {sheetsQuery.isError ? (
               <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-6 text-sm text-destructive">
                 Erro ao conectar: {(sheetsQuery.error as Error).message}
               </div>
@@ -418,21 +380,7 @@ function Sidebar({
   );
 }
 
-function Header({ 
-  onMenu, 
-  sheetTitle, 
-  isSheetMode, 
-  onToggleMode, 
-  gid 
-}: { 
-  onMenu: () => void; 
-  sheetTitle: string | null;
-  isSheetMode: boolean;
-  onToggleMode: () => void;
-  gid?: number;
-}) {
-  const editUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/edit${gid !== undefined ? `#gid=${gid}` : ''}`;
-
+function Header({ onMenu, sheetTitle }: { onMenu: () => void; sheetTitle: string | null }) {
   return (
     <header className="sticky top-0 z-30 glass border-b">
       <div className="flex items-center gap-3 px-4 md:px-8 h-16">
@@ -442,35 +390,13 @@ function Header({
         <div className="flex items-center gap-2 min-w-0">
           <LayoutDashboard className="h-4 w-4 text-muted-foreground shrink-0" />
           <h1 className="font-semibold tracking-tight truncate">
-            {isSheetMode ? "Modo Edição" : (sheetTitle?.trim() ?? "Painel")}
+            {sheetTitle?.trim() ?? "Painel"}
           </h1>
-          {!isSheetMode && (
-            <Badge variant="secondary" className="hidden sm:inline-flex ml-2 text-[10px] font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-none">
-              <Activity className="h-3 w-3 mr-1" /> Sincronizado
-            </Badge>
-          )}
+          <Badge variant="secondary" className="hidden sm:inline-flex ml-2 text-[10px] font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-none">
+            <Activity className="h-3 w-3 mr-1" /> Sincronizado
+          </Badge>
         </div>
         <div className="ml-auto flex items-center gap-1.5">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={onToggleMode}
-            className={cn(
-              "gap-2 px-3 h-9 rounded-xl transition-all", 
-              isSheetMode ? "bg-cyan-500/10 text-cyan-600 border border-cyan-500/20" : "hover:bg-muted"
-            )}
-          >
-            <Table className="h-4 w-4" />
-            <span className="hidden sm:inline font-medium">{isSheetMode ? "Voltar ao Dashboard" : "Editar Planilha"}</span>
-          </Button>
-          
-          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl" asChild title="Abrir em nova guia">
-            <a href={editUrl} target="_blank" rel="noopener noreferrer">
-              <ExternalLink className="h-4 w-4" />
-            </a>
-          </Button>
-          
-          <div className="w-px h-4 bg-border mx-1 hidden sm:block" />
           <ThemeToggle />
         </div>
       </div>
