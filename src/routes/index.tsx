@@ -466,7 +466,7 @@ function DashboardContent({
 
       {/* Charts */}
       <div className="grid gap-4 lg:grid-cols-3">
-        <ChartCard title="Distribuição" subtitle={barCol ?? "—"} className="lg:col-span-2">
+        <ChartCard title="Distribuição" subtitle={barCol ?? "—"} className="lg:col-span-3">
           {barData.length ? (
             <ResponsiveContainer width="100%" height={280}>
               <BarChart data={barData} margin={{ top: 10, right: 12, left: -10, bottom: 0 }}>
@@ -527,47 +527,6 @@ function DashboardContent({
           )}
         </ChartCard>
 
-        <ChartCard title="Evolução temporal" subtitle={dateField ? (sumCol ? `${dateField} · Soma de ${sumCol}` : `${dateField} · Contagem`) : "Sem data detectada"} className="lg:col-span-3">
-          {lineData.length ? (
-            <ResponsiveContainer width="100%" height={260}>
-              <AreaChart data={lineData} margin={{ top: 10, right: 16, left: -10, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="oklch(0.62 0.22 264)" stopOpacity={0.55} />
-                    <stop offset="100%" stopColor="oklch(0.62 0.22 264)" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
-                <XAxis dataKey="date" tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} />
-                <YAxis tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} />
-                <Tooltip
-                  formatter={(val: number) => [
-                    sumCol && /valor|preco|total|receita/i.test(sumCol)
-                      ? `R$ ${val.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`
-                      : val.toLocaleString("pt-BR"),
-                    sumCol || "Quantidade",
-                  ]}
-                  contentStyle={{
-                    background: "var(--popover)",
-                    border: "1px solid var(--border)",
-                    borderRadius: 10,
-                    fontSize: 12,
-                  }}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="value"
-                  stroke="oklch(0.62 0.22 264)"
-                  strokeWidth={2}
-                  fill="url(#areaGrad)"
-                  animationDuration={1000}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          ) : (
-            <EmptyChart />
-          )}
-        </ChartCard>
       </div>
 
       {/* Filters + Table */}
