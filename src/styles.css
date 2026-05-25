@@ -2,6 +2,67 @@
   display: none !important;
 }
 
+@media print {
+  aside, 
+  header, 
+  .no-print,
+  button,
+  .badge,
+  .theme-toggle,
+  input,
+  select {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .lg\:pl-72 {
+    padding-left: 0 !important;
+  }
+
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .glass {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .rounded-2xl, .rounded-xl {
+    border-radius: 0 !important;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  th, td {
+    border: 1px solid #ddd !important;
+    padding: 8px !important;
+    font-size: 10px !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+  }
+
+  tr {
+    page-break-inside: avoid !important;
+  }
+
+  .ambient-bg {
+    background: none !important;
+  }
+}
+
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
