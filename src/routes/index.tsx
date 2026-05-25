@@ -914,7 +914,7 @@ function DashboardContent({
           </div>
         </div>
 
-        <div className="rounded-xl border bg-card overflow-hidden">
+        <div ref={reportRef} className="rounded-xl border bg-card overflow-hidden">
           <div className="overflow-x-auto scrollbar-thin">
             <table className="w-full text-sm">
               <thead className="bg-muted/40">
