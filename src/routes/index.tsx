@@ -391,8 +391,8 @@ function DashboardContent({
   const okCol = headers.find((h) => h.toUpperCase().trim() === "OK");
   
   const countLiberados = filtered.filter((r) => {
-    const val = (r[statusCol] ?? "").toLowerCase();
-    return val.includes("ok") || val.includes("liberad") || val.includes("concluid") || val.includes("sim") || val.includes("entregue");
+    const val = (r[statusCol] ?? "").toUpperCase().trim();
+    return val === "TRUE" || val === "VERDADEIRO" || val === "OK" || val === "SIM";
   }).length;
 
   const countOk = okCol 
