@@ -2,7 +2,7 @@
   display: none !important;
 }
 
-@media print {
+@media print, .pdf-export {
   /* Hide UI elements */
   aside, 
   header, 
