@@ -386,13 +386,15 @@ function DashboardContent({
   const uniqueClients = cols.categoricalCols[0]
     ? new Set(filtered.map((r) => (r[cols.categoricalCols[0]] ?? "").trim()).filter(Boolean)).size
     : null;
-  const completion = (() => {
-    const statusCol =
-      headers.find((h) => /status|ok|liberad|conferenc/i.test(h)) ?? cols.categoricalCols[0];
-    if (!statusCol) return null;
-    const positives = filtered.filter((r) => /ok|true|conclu|sim|entregue|liberad/i.test(r[statusCol] ?? "")).length;
-    return filtered.length ? Math.round((positives / filtered.length) * 100) : 0;
-  })();
+  
+  const statusCol = headers.find((h) => /status|ok|liberad|conferenc/i.test(h)) ?? cols.categoricalCols[0];
+  
+  const countLiberados = filtered.filter((r) => {
+    const val = (r[statusCol] ?? "").toLowerCase();
+    return val.includes("ok") || val.includes("liberad") || val.includes("concluid") || val.includes("sim") || val.includes("entregue");
+  }).length;
+
+  const completion = filtered.length ? Math.round((countLiberados / filtered.length) * 100) : 0;
 
   // Chart data
   const barCol = cols.categoricalCols[0];
@@ -427,11 +429,12 @@ function DashboardContent({
       {/* KPI strip */}
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
         <KpiCard
-          label="Registros"
-          value={totalRecords.toLocaleString("pt-BR")}
-          delta={previousCount ? `${Math.round((totalRecords / previousCount) * 100)}% do total` : undefined}
-          icon={<Database className="h-4 w-4" />}
-          accent="from-[oklch(0.62_0.22_264)] to-[oklch(0.7_0.2_200)]"
+          label="Liberados"
+          value={countLiberados.toLocaleString("pt-BR")}
+          delta={`${completion}% de aproveitamento`}
+          icon={<CheckCircle2 className="h-4 w-4" />}
+          accent="from-emerald-500 to-teal-400"
+          progress={completion}
         />
         {sumValue !== null && (
           <KpiCard
@@ -453,15 +456,12 @@ function DashboardContent({
             accent="from-amber-500 to-orange-400"
           />
         )}
-        {completion !== null && (
-          <KpiCard
-            label="Taxa de conclusão"
-            value={`${completion}%`}
-            icon={<CheckCircle2 className="h-4 w-4" />}
-            accent="from-fuchsia-500 to-pink-400"
-            progress={completion}
-          />
-        )}
+        <KpiCard
+          label="Total de Pedidos"
+          value={totalRecords.toLocaleString("pt-BR")}
+          icon={<Database className="h-4 w-4" />}
+          accent="from-[oklch(0.62_0.22_264)] to-[oklch(0.7_0.2_200)]"
+        />
       </div>
 
       {/* Charts */}
