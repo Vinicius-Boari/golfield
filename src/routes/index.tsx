@@ -39,9 +39,12 @@ import {
   Menu,
   X,
   Box,
+  Lock,
+  WifiOff,
 } from "lucide-react";
 
 import { getSheetData, listSheets } from "@/lib/sheets.functions";
+import { useEffect } from "react";
 import {
   classifyColumns,
   countBy,
@@ -89,6 +92,80 @@ const CHART_COLORS = [
   "oklch(0.68 0.2 235)",
 ];
 
+const ALLOWED_IP = "35.233.82.85"; // Substitua pelo seu IP se necessário
+
+function NetworkGuard({ children }: { children: React.ReactNode }) {
+  const [userIp, setUserIp] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(false);
+
+  useEffect(() => {
+    async function checkIp() {
+      try {
+        const response = await fetch("https://api.ipify.org?format=json");
+        const data = await response.json();
+        setUserIp(data.ip);
+        // Em um cenário real, você pode querer permitir múltiplos IPs ou uma faixa
+        setIsAuthorized(data.ip === ALLOWED_IP);
+      } catch (error) {
+        console.error("Erro ao verificar IP:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    checkIp();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="text-center space-y-4">
+          <RefreshCw className="h-10 w-10 animate-spin mx-auto text-primary" />
+          <p className="text-muted-foreground animate-pulse">Verificando segurança da rede...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="max-w-md w-full glass p-8 rounded-3xl border border-destructive/20 text-center space-y-6 shadow-2xl"
+        >
+          <div className="h-20 w-20 bg-destructive/10 rounded-full flex items-center justify-center mx-auto">
+            <Lock className="h-10 w-10 text-destructive" />
+          </div>
+          <div className="space-y-2">
+            <h1 className="text-2xl font-bold tracking-tight">Acesso Restrito</h1>
+            <p className="text-muted-foreground">
+              Este painel só pode ser acessado a partir da rede autorizada.
+            </p>
+          </div>
+          <div className="p-4 bg-muted/50 rounded-2xl border text-sm font-mono break-all">
+            Seu IP: {userIp || "Não detectado"}
+          </div>
+          <div className="flex items-center gap-2 justify-center text-xs text-muted-foreground">
+            <WifiOff className="h-3 w-3" />
+            <span>Rede não reconhecida</span>
+          </div>
+          <Button 
+            variant="outline" 
+            className="w-full rounded-xl"
+            onClick={() => window.location.reload()}
+          >
+            Tentar Novamente
+          </Button>
+        </motion.div>
+      </div>
+    );
+  }
+
+  return <>{children}</>;
+}
+
 function DashboardPage() {
   const sheetsQuery = useQuery({
     queryKey: ["sheets"],
@@ -109,40 +186,42 @@ function DashboardPage() {
   const current = activeSheet ?? availableSheets[0]?.title ?? sheetsQuery.data?.sheets[0]?.title ?? null;
 
   return (
-    <div className="min-h-screen bg-background text-foreground ambient-bg">
-      <div className="flex">
-        {/* Sidebar */}
-        <Sidebar
-          spreadsheetTitle={sheetsQuery.data?.title}
-          sheets={sheetsQuery.data?.sheets ?? []}
-          current={current}
-          onSelect={(t) => {
-            setActiveSheet(t);
-            setSidebarOpen(false);
-          }}
-          open={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-        />
+    <NetworkGuard>
+      <div className="min-h-screen bg-background text-foreground ambient-bg">
+        <div className="flex">
+          {/* Sidebar */}
+          <Sidebar
+            spreadsheetTitle={sheetsQuery.data?.title}
+            sheets={sheetsQuery.data?.sheets ?? []}
+            current={current}
+            onSelect={(t) => {
+              setActiveSheet(t);
+              setSidebarOpen(false);
+            }}
+            open={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+          />
 
-        <div className="flex-1 min-w-0 lg:pl-72">
-          <Header onMenu={() => setSidebarOpen(true)} sheetTitle={current} />
-          <main className="px-4 md:px-8 pb-16 pt-6 space-y-6">
-            {sheetsQuery.isError ? (
-              <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-6 text-sm text-destructive">
-                Erro ao conectar: {(sheetsQuery.error as Error).message}
-              </div>
-            ) : current ? (
-              <SheetDashboard sheetTitle={current} />
-            ) : (
-              <div className="text-muted-foreground text-sm flex items-center gap-2">
-                <RefreshCw className="h-4 w-4 animate-spin" />
-                Carregando planilhas…
-              </div>
-            )}
-          </main>
+          <div className="flex-1 min-w-0 lg:pl-72">
+            <Header onMenu={() => setSidebarOpen(true)} sheetTitle={current} />
+            <main className="px-4 md:px-8 pb-16 pt-6 space-y-6">
+              {sheetsQuery.isError ? (
+                <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-6 text-sm text-destructive">
+                  Erro ao conectar: {(sheetsQuery.error as Error).message}
+                </div>
+              ) : current ? (
+                <SheetDashboard sheetTitle={current} />
+              ) : (
+                <div className="text-muted-foreground text-sm flex items-center gap-2">
+                  <RefreshCw className="h-4 w-4 animate-spin" />
+                  Carregando planilhas…
+                </div>
+              )}
+            </main>
+          </div>
         </div>
       </div>
-    </div>
+    </NetworkGuard>
   );
 }
 
