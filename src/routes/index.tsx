@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef } from "react";
+import html2pdf from "html2pdf.js";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Bar,
@@ -459,7 +460,42 @@ function DashboardContent({
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [showOnlyEnvio, setShowOnlyEnvio] = useState(false);
   const [isPrintingAll, setIsPrintingAll] = useState(false);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [showPrintOptions, setShowPrintOptions] = useState(false);
+  const [showPdfOptions, setShowPdfOptions] = useState(false);
+  const reportRef = useRef<HTMLDivElement>(null);
+
+  const handleDownloadPdf = async (all: boolean) => {
+    setIsGeneratingPdf(true);
+    if (all) setIsPrintingAll(true);
+    setShowPdfOptions(false);
+    
+    // Wait for state update and re-render
+    setTimeout(async () => {
+      const element = reportRef.current;
+      if (!element) return;
+
+      const opt = {
+        margin: 10,
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
+        filename: `relatorio-${sheetTitle.toLowerCase().replace(/\s+/g, '-')}-${new Date().toLocaleDateString('pt-BR')}.pdf`,
+        image: { type: 'jpeg' as const, quality: 0.98 },
+        html2canvas: { 
+          scale: 2, 
+          useCORS: true,
+          letterRendering: true,
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' as const }
+      };
+
+      try {
+        await html2pdf().set(opt).from(element).save();
+      } finally {
+        setIsGeneratingPdf(false);
+        setIsPrintingAll(false);
+      }
+    }, 500);
+  };
   
 
   const validRows = useMemo(() => {
@@ -622,7 +658,7 @@ function DashboardContent({
   };
 
   return (
-    <div className="space-y-6">
+    <div ref={reportRef} className={cn("space-y-6", isGeneratingPdf && "pdf-mode")}>
       {/* KPI strip */}
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
         <KpiCard
@@ -828,6 +864,43 @@ function DashboardContent({
             </AnimatePresence>
           </div>
 
+          <div className="relative">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setShowPdfOptions(!showPdfOptions)}
+              className="h-8 px-4 rounded-lg border-muted-foreground/20 hover:bg-muted bg-primary/5 text-primary hover:text-primary hover:bg-primary/10"
+            >
+              <Download className="h-3.5 w-3.5 mr-1" /> PDF
+            </Button>
+            
+            <AnimatePresence>
+              {showPdfOptions && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  className="absolute left-0 mt-2 w-48 glass rounded-xl border border-white/10 shadow-2xl z-50 p-2 space-y-1"
+                >
+                  <button
+                    onClick={() => handleDownloadPdf(false)}
+                    className="w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-primary/10 transition-colors flex items-center justify-between"
+                  >
+                    <span>Página Atual</span>
+                    <span className="text-[10px] opacity-50">Baixar esta pág.</span>
+                  </button>
+                  <button
+                    onClick={() => handleDownloadPdf(true)}
+                    className="w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-primary/10 transition-colors flex items-center justify-between"
+                  >
+                    <span>Tudo</span>
+                    <span className="text-[10px] opacity-50">Baixar todas pág.</span>
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
           <div className="ml-auto flex items-center gap-3">
             <div className="hidden md:flex items-center gap-2 text-[11px] text-muted-foreground">
               <RefreshCw className={cn("h-3 w-3", isFetching && "animate-spin")} />
@@ -865,7 +938,7 @@ function DashboardContent({
               </thead>
               <tbody>
                 <AnimatePresence initial={false}>
-                  {(isPrintingAll || window.matchMedia('print').matches ? (isPrintingAll ? filtered : pageRows) : pageRows).map((row, idx) => (
+                  {(isPrintingAll || isGeneratingPdf || window.matchMedia('print').matches ? ((isPrintingAll || isGeneratingPdf) ? filtered : pageRows) : pageRows).map((row, idx) => (
                     <motion.tr
                       key={`${safePage}-${idx}`}
                       initial={{ opacity: 0, y: 4 }}
@@ -896,7 +969,7 @@ function DashboardContent({
             </table>
           </div>
 
-          <div className="flex items-center justify-between gap-2 px-4 py-3 border-t bg-muted/20 text-xs">
+          <div className="flex items-center justify-between gap-2 px-4 py-3 border-t bg-muted/20 text-xs no-print">
             <div className="text-muted-foreground">
               Página {safePage} de {totalPages}
             </div>
