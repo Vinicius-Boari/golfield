@@ -312,6 +312,8 @@ function DashboardContent({
   const [pageSize] = useState(15);
   const [sortKey, setSortKey] = useState<string | null>(null);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+  const [showOnlyEnvio, setShowOnlyEnvio] = useState(false);
+  const [showOnlyNF, setShowOnlyNF] = useState(false);
 
   const validRows = useMemo(() => {
     const pedidoCol = headers.find((h) => {
@@ -375,8 +377,21 @@ function DashboardContent({
         return sortDir === "asc" ? cmp : -cmp;
       });
     }
+    }
+    if (showOnlyEnvio) {
+      const envioCol = headers.find((h) => /envio|despacho/i.test(h));
+      if (envioCol) {
+        r = r.filter((row) => (row[envioCol] ?? "").trim() !== "");
+      }
+    }
+    if (showOnlyNF) {
+      const nfCol = headers.find((h) => /nf|nota|fiscal/i.test(h));
+      if (nfCol) {
+        r = r.filter((row) => (row[nfCol] ?? "").trim() !== "");
+      }
+    }
     return r;
-  }, [validRows, search, filters, dateField, dateFrom, dateTo, sortKey, sortDir, cols]);
+  }, [validRows, search, filters, dateField, dateFrom, dateTo, sortKey, sortDir, cols, showOnlyEnvio, showOnlyNF, headers]);
 
   // KPIs
   const totalRecords = filtered.length;
@@ -428,6 +443,8 @@ function DashboardContent({
     setDateFrom("");
     setDateTo("");
     setPage(1);
+    setShowOnlyEnvio(false);
+    setShowOnlyNF(false);
   };
 
   return (
@@ -547,6 +564,28 @@ function DashboardContent({
         </div>
 
         <div className="flex flex-wrap items-center gap-2 mb-3">
+          <Button
+            size="sm"
+            variant={showOnlyEnvio ? "default" : "outline"}
+            onClick={() => {
+              setShowOnlyEnvio(!showOnlyEnvio);
+              setPage(1);
+            }}
+            className={cn("h-8", showOnlyEnvio && "bg-blue-600 hover:bg-blue-700")}
+          >
+            Data de Envio
+          </Button>
+          <Button
+            size="sm"
+            variant={showOnlyNF ? "default" : "outline"}
+            onClick={() => {
+              setShowOnlyNF(!showOnlyNF);
+              setPage(1);
+            }}
+            className={cn("h-8", showOnlyNF && "bg-indigo-600 hover:bg-indigo-700")}
+          >
+            Com NF
+          </Button>
           <Button size="sm" variant="outline" onClick={resetFilters} className="h-8">
             Limpar filtros
           </Button>
