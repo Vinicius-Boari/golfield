@@ -45,6 +45,7 @@ import {
   Eye,
   EyeOff,
   ExternalLink,
+  Plus,
 } from "lucide-react";
 
 import { getSheetData, listSheets } from "@/lib/sheets.functions";
