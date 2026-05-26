@@ -46,6 +46,7 @@ import {
   EyeOff,
   ExternalLink,
   Plus,
+  Pencil,
 } from "lucide-react";
 
 import { getSheetData, listSheets, appendSheetRow } from "@/lib/sheets.functions";
