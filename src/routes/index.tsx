@@ -222,12 +222,12 @@ function DashboardPage() {
   const [activeSheet, setActiveSheet] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   
+  const ALLOWED_TABS = ["ABRIL", "MAIO", "PEDIDOS DE MAIO"];
   const availableSheets = useMemo(() => {
     if (!isAuthenticated) return [];
-    return (sheetsQuery.data?.sheets ?? []).filter((s) => {
-      const title = s.title.toUpperCase().trim();
-      return title === "ABRIL" || title === "PEDIDOS DE MAIO";
-    });
+    return (sheetsQuery.data?.sheets ?? [])
+      .filter((s) => ALLOWED_TABS.includes(s.title.toUpperCase().trim()))
+      .sort((a, b) => ALLOWED_TABS.indexOf(a.title.toUpperCase().trim()) - ALLOWED_TABS.indexOf(b.title.toUpperCase().trim()));
   }, [sheetsQuery.data, isAuthenticated]);
 
   if (!isAuthenticated) {
