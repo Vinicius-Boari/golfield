@@ -979,6 +979,8 @@ function DashboardContent({
             </AnimatePresence>
           </div>
 
+          <AddRecordButton sheetTitle={sheetTitle} headers={headers} onAdded={refetch} />
+
           <Button
             size="sm"
             variant="outline"
