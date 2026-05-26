@@ -340,9 +340,10 @@ function Sidebar({
             Abas
           </div>
           {sheets
-            .filter((s) => {
-              const title = s.title.toUpperCase().trim();
-              return title === "ABRIL" || title === "PEDIDOS DE MAIO";
+            .filter((s) => ["ABRIL", "MAIO", "PEDIDOS DE MAIO"].includes(s.title.toUpperCase().trim()))
+            .sort((a, b) => {
+              const order = ["ABRIL", "MAIO", "PEDIDOS DE MAIO"];
+              return order.indexOf(a.title.toUpperCase().trim()) - order.indexOf(b.title.toUpperCase().trim());
             })
             .map((s) => {
               const active = s.title === current;
