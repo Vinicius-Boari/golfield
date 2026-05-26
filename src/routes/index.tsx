@@ -223,14 +223,46 @@ function DashboardPage() {
 
   const [activeSheet, setActiveSheet] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  
-  const ALLOWED_TABS = ["ABRIL", "MAIO", "PEDIDOS DE MAIO"];
+  const [extraTabs, setExtraTabs] = useState<string[]>(() => {
+    try {
+      const v = localStorage.getItem("extra_tabs");
+      return v ? JSON.parse(v) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const BASE_TABS = ["ABRIL", "MAIO", "PEDIDOS DE MAIO"];
+  const visibleTitles = useMemo(
+    () => [...BASE_TABS, ...extraTabs.map((t) => t.toUpperCase().trim())],
+    [extraTabs],
+  );
+
   const availableSheets = useMemo(() => {
     if (!isAuthenticated) return [];
     return (sheetsQuery.data?.sheets ?? [])
-      .filter((s) => ALLOWED_TABS.includes(s.title.toUpperCase().trim()))
-      .sort((a, b) => ALLOWED_TABS.indexOf(a.title.toUpperCase().trim()) - ALLOWED_TABS.indexOf(b.title.toUpperCase().trim()));
-  }, [sheetsQuery.data, isAuthenticated]);
+      .filter((s) => visibleTitles.includes(s.title.toUpperCase().trim()))
+      .sort(
+        (a, b) =>
+          visibleTitles.indexOf(a.title.toUpperCase().trim()) -
+          visibleTitles.indexOf(b.title.toUpperCase().trim()),
+      );
+  }, [sheetsQuery.data, isAuthenticated, visibleTitles]);
+
+  const addExtraTab = (title: string) => {
+    const up = title.toUpperCase().trim();
+    if (visibleTitles.includes(up)) return;
+    const next = [...extraTabs, title];
+    setExtraTabs(next);
+    localStorage.setItem("extra_tabs", JSON.stringify(next));
+    setActiveSheet(title);
+  };
+
+  const removeExtraTab = (title: string) => {
+    const next = extraTabs.filter((t) => t !== title);
+    setExtraTabs(next);
+    localStorage.setItem("extra_tabs", JSON.stringify(next));
+  };
 
   if (!isAuthenticated) {
     return <LoginPage onLogin={() => setIsAuthenticated(true)} />;
@@ -245,6 +277,10 @@ function DashboardPage() {
         <Sidebar
           spreadsheetTitle={sheetsQuery.data?.title}
           sheets={sheetsQuery.data?.sheets ?? []}
+          visibleTitles={visibleTitles}
+          extraTabs={extraTabs}
+          onAddTab={addExtraTab}
+          onRemoveTab={removeExtraTab}
           current={current}
           onSelect={(t) => {
             setActiveSheet(t);
