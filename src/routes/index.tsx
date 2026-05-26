@@ -315,6 +315,10 @@ function DashboardPage() {
 function Sidebar({
   spreadsheetTitle,
   sheets,
+  visibleTitles,
+  extraTabs,
+  onAddTab,
+  onRemoveTab,
   current,
   onSelect,
   open,
@@ -322,11 +326,27 @@ function Sidebar({
 }: {
   spreadsheetTitle?: string;
   sheets: { id: number; title: string; rowCount: number }[];
+  visibleTitles: string[];
+  extraTabs: string[];
+  onAddTab: (title: string) => void;
+  onRemoveTab: (title: string) => void;
   current: string | null;
   onSelect: (t: string) => void;
   open: boolean;
   onClose: () => void;
 }) {
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const visibleSheets = sheets
+    .filter((s) => visibleTitles.includes(s.title.toUpperCase().trim()))
+    .sort(
+      (a, b) =>
+        visibleTitles.indexOf(a.title.toUpperCase().trim()) -
+        visibleTitles.indexOf(b.title.toUpperCase().trim()),
+    );
+  const addableSheets = sheets.filter(
+    (s) => !visibleTitles.includes(s.title.toUpperCase().trim()),
+  );
+
   return (
     <>
       {/* Mobile overlay */}
@@ -374,20 +394,54 @@ function Sidebar({
           <div className="px-2 pb-3 text-xs text-muted-foreground line-clamp-2">
             {spreadsheetTitle ?? "Carregando…"}
           </div>
-          <div className="px-2 py-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
-            Abas
-          </div>
-          {sheets
-            .filter((s) => ["ABRIL", "MAIO", "PEDIDOS DE MAIO"].includes(s.title.toUpperCase().trim()))
-            .sort((a, b) => {
-              const order = ["ABRIL", "MAIO", "PEDIDOS DE MAIO"];
-              return order.indexOf(a.title.toUpperCase().trim()) - order.indexOf(b.title.toUpperCase().trim());
-            })
-            .map((s) => {
-              const active = s.title === current;
-              return (
+          <div className="px-2 py-2 flex items-center justify-between">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+              Abas
+            </span>
+            <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
+              <PopoverTrigger asChild>
                 <button
-                  key={s.id}
+                  className="h-6 w-6 rounded-md flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                  aria-label="Adicionar aba"
+                  title="Adicionar aba"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent side="right" align="start" className="w-64 p-2">
+                <div className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground px-2 py-1.5">
+                  Adicionar aba da planilha
+                </div>
+                <div className="max-h-72 overflow-y-auto scrollbar-thin">
+                  {addableSheets.length === 0 ? (
+                    <div className="px-2 py-3 text-xs text-muted-foreground">
+                      Todas as abas já estão visíveis.
+                    </div>
+                  ) : (
+                    addableSheets.map((s) => (
+                      <button
+                        key={s.id}
+                        onClick={() => {
+                          onAddTab(s.title);
+                          setPickerOpen(false);
+                        }}
+                        className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-foreground hover:bg-muted text-left"
+                      >
+                        <Plus className="h-3.5 w-3.5 opacity-60 shrink-0" />
+                        <span className="truncate flex-1">{s.title.trim()}</span>
+                      </button>
+                    ))
+                  )}
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
+          {visibleSheets.map((s) => {
+            const active = s.title === current;
+            const isExtra = extraTabs.includes(s.title);
+            return (
+              <div key={s.id} className="group relative">
+                <button
                   onClick={() => onSelect(s.title)}
                   className={cn(
                     "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
@@ -403,9 +457,27 @@ function Sidebar({
                   )}
                   <span className="truncate flex-1 text-left">{s.title.trim()}</span>
                 </button>
-              );
-            })}
+                {isExtra && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onRemoveTab(s.title);
+                    }}
+                    className={cn(
+                      "absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity",
+                      active ? "text-primary-foreground hover:bg-white/20" : "text-muted-foreground hover:bg-muted-foreground/20",
+                    )}
+                    aria-label="Remover aba"
+                    title="Remover aba"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                )}
+              </div>
+            );
+          })}
         </div>
+
 
         <div className="px-6 py-4 border-t text-[11px] text-muted-foreground flex items-center gap-2">
           <span className="relative flex h-2 w-2">
