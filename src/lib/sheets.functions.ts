@@ -75,10 +75,11 @@ export const listSheets = createServerFn({ method: "GET" }).handler(async () => 
   return { title: j.properties?.title ?? "Planilha", sheets };
 });
 
+export type SheetRow = Record<string, string> & { __rowIndex: string };
 export type SheetData = {
   title: string;
   headers: string[];
-  rows: Record<string, string>[];
+  rows: SheetRow[];
 };
 
 export const getSheetData = createServerFn({ method: "GET" })
@@ -92,14 +93,16 @@ export const getSheetData = createServerFn({ method: "GET" })
       return { title: data.title, headers: [], rows: [] } satisfies SheetData;
     }
     const rawHeaders = values[0].map((h, i) => (h?.trim() ? h.trim() : `Col ${i + 1}`));
-    const rows = values.slice(1).map((r) => {
-      const o: Record<string, string> = {};
-      rawHeaders.forEach((h, i) => {
-        o[h] = (r[i] ?? "").toString();
+    const rows: SheetRow[] = values.slice(1).map((r, i) => {
+      const o: SheetRow = { __rowIndex: String(i + 2) } as SheetRow; // sheet row (1-based, +1 for header)
+      rawHeaders.forEach((h, idx) => {
+        o[h] = (r[idx] ?? "").toString();
       });
       return o;
     });
-    const filtered = rows.filter((r) => Object.values(r).some((v) => v && v.trim() !== ""));
+    const filtered = rows.filter((r) =>
+      Object.entries(r).some(([k, v]) => k !== "__rowIndex" && v && v.trim() !== ""),
+    );
     return { title: data.title, headers: rawHeaders, rows: filtered } satisfies SheetData;
   });
 
@@ -123,8 +126,45 @@ export const appendSheetRow = createServerFn({ method: "POST" })
     if (!res.ok) {
       throw new Error(`Append failed ${res.status}: ${(await res.text()).slice(0, 200)}`);
     }
-    // Invalidate cache for this sheet
     cache.delete(`data:${data.title}`);
     return { ok: true };
   });
+
+function colLetter(n: number): string {
+  let s = "";
+  let x = n;
+  while (x > 0) {
+    const m = (x - 1) % 26;
+    s = String.fromCharCode(65 + m) + s;
+    x = Math.floor((x - 1) / 26);
+  }
+  return s;
+}
+
+export const updateSheetRow = createServerFn({ method: "POST" })
+  .inputValidator((d) =>
+    z
+      .object({
+        title: z.string().min(1).max(200),
+        rowIndex: z.number().int().min(2).max(100000),
+        values: z.array(z.string().max(5000)).min(1).max(200),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data }) => {
+    const lastCol = colLetter(data.values.length);
+    const range = `'${data.title.replace(/'/g, "''")}'!A${data.rowIndex}:${lastCol}${data.rowIndex}`;
+    const url = `${GATEWAY}/spreadsheets/${SPREADSHEET_ID}/values/${range}?valueInputOption=USER_ENTERED`;
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: { ...headers(), "Content-Type": "application/json" },
+      body: JSON.stringify({ values: [data.values] }),
+    });
+    if (!res.ok) {
+      throw new Error(`Update failed ${res.status}: ${(await res.text()).slice(0, 200)}`);
+    }
+    cache.delete(`data:${data.title}`);
+    return { ok: true };
+  });
+
 
