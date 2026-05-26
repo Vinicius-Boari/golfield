@@ -1326,3 +1326,114 @@ function AddRecordButton({
     </>
   );
 }
+
+function EditRecordButton({
+  sheetTitle,
+  headers,
+  row,
+  onSaved,
+}: {
+  sheetTitle: string;
+  headers: string[];
+  row: Record<string, string> & { __rowIndex?: string };
+  onSaved: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [values, setValues] = useState<Record<string, string>>({});
+  const qc = useQueryClient();
+  const rowIndex = Number(row.__rowIndex);
+
+  const openDialog = () => {
+    const init: Record<string, string> = {};
+    headers.forEach((h) => (init[h] = row[h] ?? ""));
+    setValues(init);
+    setOpen(true);
+  };
+
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const arr = headers.map((h) => values[h] ?? "");
+      return updateSheetRow({ data: { title: sheetTitle, rowIndex, values: arr } });
+    },
+    onSuccess: () => {
+      toast.success("Registro atualizado na planilha!");
+      setOpen(false);
+      qc.invalidateQueries({ queryKey: ["sheet", sheetTitle] });
+      onSaved();
+    },
+    onError: (e: Error) => toast.error(`Erro ao atualizar: ${e.message}`),
+  });
+
+  if (!rowIndex) return null;
+
+  return (
+    <>
+      <button
+        onClick={openDialog}
+        className="inline-flex items-center gap-1 h-7 px-2.5 rounded-md text-xs text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+        title="Editar registro"
+      >
+        <Pencil className="h-3 w-3" />
+        Editar
+      </button>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Editar registro · linha {rowIndex}</DialogTitle>
+            <DialogDescription>
+              As alterações serão salvas em tempo real na planilha do Google Sheets.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              mutation.mutate();
+            }}
+            className="grid grid-cols-1 sm:grid-cols-2 gap-3 py-2"
+          >
+            {headers.map((h) => (
+              <div key={h} className="space-y-1.5">
+                <label className="text-xs font-medium text-muted-foreground">{h}</label>
+                <Input
+                  value={values[h] ?? ""}
+                  onChange={(e) => setValues((v) => ({ ...v, [h]: e.target.value }))}
+                  placeholder={h}
+                  className="h-9"
+                />
+              </div>
+            ))}
+
+            <DialogFooter className="sm:col-span-2 mt-4 gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+                disabled={mutation.isPending}
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                disabled={mutation.isPending}
+                className="bg-gradient-to-r from-cyan-600 to-cyan-800 text-white"
+              >
+                {mutation.isPending ? (
+                  <>
+                    <RefreshCw className="h-3.5 w-3.5 mr-1 animate-spin" /> Salvando…
+                  </>
+                ) : (
+                  <>
+                    <Pencil className="h-3.5 w-3.5 mr-1" /> Salvar alterações
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+
