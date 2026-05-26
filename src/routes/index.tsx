@@ -1026,6 +1026,9 @@ function DashboardContent({
                       </span>
                     </th>
                   ))}
+                  <th className="text-right font-semibold text-xs uppercase tracking-wider text-muted-foreground px-4 py-3 whitespace-nowrap no-print">
+                    Ações
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -1047,12 +1050,20 @@ function DashboardContent({
                             </td>
                           );
                         })}
+                        <td className="px-4 py-2.5 text-right whitespace-nowrap no-print">
+                          <EditRecordButton
+                            sheetTitle={sheetTitle}
+                            headers={headers}
+                            row={row}
+                            onSaved={refetch}
+                          />
+                        </td>
                     </motion.tr>
                   ))}
                 </AnimatePresence>
                 {pageRows.length === 0 && (
                   <tr>
-                    <td colSpan={headers.length} className="px-4 py-12 text-center text-muted-foreground text-sm">
+                    <td colSpan={headers.length + 1} className="px-4 py-12 text-center text-muted-foreground text-sm">
                       Nenhum registro encontrado para os filtros aplicados.
                     </td>
                   </tr>
