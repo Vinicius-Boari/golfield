@@ -48,7 +48,10 @@ import {
   Plus,
 } from "lucide-react";
 
-import { getSheetData, listSheets } from "@/lib/sheets.functions";
+import { getSheetData, listSheets, appendSheetRow } from "@/lib/sheets.functions";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
 import {
   classifyColumns,
