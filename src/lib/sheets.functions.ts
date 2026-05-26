@@ -102,3 +102,29 @@ export const getSheetData = createServerFn({ method: "GET" })
     const filtered = rows.filter((r) => Object.values(r).some((v) => v && v.trim() !== ""));
     return { title: data.title, headers: rawHeaders, rows: filtered } satisfies SheetData;
   });
+
+export const appendSheetRow = createServerFn({ method: "POST" })
+  .inputValidator((d) =>
+    z
+      .object({
+        title: z.string().min(1).max(200),
+        values: z.array(z.string().max(5000)).min(1).max(200),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data }) => {
+    const range = `'${data.title.replace(/'/g, "''")}'!A1`;
+    const url = `${GATEWAY}/spreadsheets/${SPREADSHEET_ID}/values/${range}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { ...headers(), "Content-Type": "application/json" },
+      body: JSON.stringify({ values: [data.values] }),
+    });
+    if (!res.ok) {
+      throw new Error(`Append failed ${res.status}: ${(await res.text()).slice(0, 200)}`);
+    }
+    // Invalidate cache for this sheet
+    cache.delete(`data:${data.title}`);
+    return { ok: true };
+  });
+
