@@ -1215,3 +1215,102 @@ function LoadingSkeleton() {
     </div>
   );
 }
+
+function AddRecordButton({
+  sheetTitle,
+  headers,
+  onAdded,
+}: {
+  sheetTitle: string;
+  headers: string[];
+  onAdded: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [values, setValues] = useState<Record<string, string>>({});
+  const qc = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const row = headers.map((h) => values[h] ?? "");
+      return appendSheetRow({ data: { title: sheetTitle, values: row } });
+    },
+    onSuccess: () => {
+      toast.success("Registro adicionado à planilha!");
+      setValues({});
+      setOpen(false);
+      qc.invalidateQueries({ queryKey: ["sheet", sheetTitle] });
+      onAdded();
+    },
+    onError: (e: Error) => toast.error(`Erro ao adicionar: ${e.message}`),
+  });
+
+  return (
+    <>
+      <Button
+        size="sm"
+        variant="outline"
+        className="h-8 px-4 rounded-lg border-muted-foreground/20 bg-cyan-500/5 text-cyan-600 hover:text-cyan-700 hover:bg-cyan-500/10"
+        onClick={() => setOpen(true)}
+      >
+        <Plus className="h-3.5 w-3.5 mr-1" /> Adicionar registro
+      </Button>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Adicionar registro · {sheetTitle.trim()}</DialogTitle>
+            <DialogDescription>
+              Os dados serão enviados em tempo real para a planilha do Google Sheets.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              mutation.mutate();
+            }}
+            className="grid grid-cols-1 sm:grid-cols-2 gap-3 py-2"
+          >
+            {headers.map((h) => (
+              <div key={h} className="space-y-1.5">
+                <label className="text-xs font-medium text-muted-foreground">{h}</label>
+                <Input
+                  value={values[h] ?? ""}
+                  onChange={(e) => setValues((v) => ({ ...v, [h]: e.target.value }))}
+                  placeholder={h}
+                  className="h-9"
+                />
+              </div>
+            ))}
+
+            <DialogFooter className="sm:col-span-2 mt-4 gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+                disabled={mutation.isPending}
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                disabled={mutation.isPending}
+                className="bg-gradient-to-r from-cyan-600 to-cyan-800 text-white"
+              >
+                {mutation.isPending ? (
+                  <>
+                    <RefreshCw className="h-3.5 w-3.5 mr-1 animate-spin" /> Enviando…
+                  </>
+                ) : (
+                  <>
+                    <Plus className="h-3.5 w-3.5 mr-1" /> Adicionar à planilha
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
