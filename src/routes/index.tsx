@@ -398,10 +398,7 @@ function Sidebar({
           <div className="px-2 pb-3 text-xs text-muted-foreground line-clamp-2">
             {spreadsheetTitle ?? "Carregando…"}
           </div>
-          <div className="px-2 py-2 flex items-center justify-between">
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
-              Abas
-            </span>
+          <div className="px-2 py-2 flex items-center gap-2">
             <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
               <PopoverTrigger asChild>
                 <button
@@ -439,6 +436,9 @@ function Sidebar({
                 </div>
               </PopoverContent>
             </Popover>
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+              Abas
+            </span>
           </div>
           {visibleSheets.map((s) => {
             const active = s.title === current;
@@ -924,6 +924,8 @@ function DashboardContent({
         </div>
 
         <div className="flex flex-wrap items-center gap-2 mb-4 pt-2 border-t border-muted/30">
+          <AddRecordButton sheetTitle={sheetTitle} headers={headers} onAdded={refetch} />
+
           <Button
             size="sm"
             variant="outline"
@@ -980,8 +982,6 @@ function DashboardContent({
             </AnimatePresence>
           </div>
 
-          <AddRecordButton sheetTitle={sheetTitle} headers={headers} onAdded={refetch} />
-
           <Button
             size="sm"
             variant="outline"
@@ -1014,6 +1014,9 @@ function DashboardContent({
             <table className="w-full text-sm">
               <thead className="bg-muted/40">
                 <tr>
+                  <th className="text-left font-semibold text-xs uppercase tracking-wider text-muted-foreground px-4 py-3 whitespace-nowrap no-print">
+                    Ações
+                  </th>
                   {headers.map((h) => (
                     <th
                       key={h}
@@ -1026,9 +1029,6 @@ function DashboardContent({
                       </span>
                     </th>
                   ))}
-                  <th className="text-right font-semibold text-xs uppercase tracking-wider text-muted-foreground px-4 py-3 whitespace-nowrap no-print">
-                    Ações
-                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -1042,6 +1042,14 @@ function DashboardContent({
                       transition={{ duration: 0.15, delay: idx * 0.01 }}
                       className="border-t hover:bg-muted/30 transition-colors"
                     >
+                        <td className="px-4 py-2.5 text-left whitespace-nowrap no-print">
+                          <EditRecordButton
+                            sheetTitle={sheetTitle}
+                            headers={headers}
+                            row={row}
+                            onSaved={refetch}
+                          />
+                        </td>
                         {headers.map((h) => {
                           const v = row[h] ?? "";
                           return (
@@ -1050,14 +1058,6 @@ function DashboardContent({
                             </td>
                           );
                         })}
-                        <td className="px-4 py-2.5 text-right whitespace-nowrap no-print">
-                          <EditRecordButton
-                            sheetTitle={sheetTitle}
-                            headers={headers}
-                            row={row}
-                            onSaved={refetch}
-                          />
-                        </td>
                     </motion.tr>
                   ))}
                 </AnimatePresence>
