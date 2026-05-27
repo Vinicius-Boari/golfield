@@ -923,9 +923,7 @@ function DashboardContent({
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-end gap-2 mb-4 pt-2 border-t border-muted/30">
-          <AddRecordButton sheetTitle={sheetTitle} headers={headers} onAdded={refetch} />
-
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-4 pt-2 border-t border-muted/30">
           <Button
             size="sm"
             variant="outline"
@@ -934,15 +932,19 @@ function DashboardContent({
           >
             Limpar filtros
           </Button>
-          <div className="relative">
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => setShowPrintOptions(!showPrintOptions)}
-              className="h-8 px-4 rounded-lg border-muted-foreground/20 hover:bg-muted bg-primary/5 text-primary hover:text-primary hover:bg-primary/10"
-            >
-              <Activity className="h-3.5 w-3.5 mr-1" /> Relatório / Imprimir
-            </Button>
+
+          <div className="flex items-center gap-2">
+            <AddRecordButton sheetTitle={sheetTitle} headers={headers} onAdded={refetch} />
+
+            <div className="relative">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setShowPrintOptions(!showPrintOptions)}
+                className="h-8 px-4 rounded-lg border-muted-foreground/20 hover:bg-muted bg-primary/5 text-primary hover:text-primary hover:bg-primary/10"
+              >
+                <Activity className="h-3.5 w-3.5 mr-1" /> Relatório / Imprimir
+              </Button>
             
             <AnimatePresence>
               {showPrintOptions && (
