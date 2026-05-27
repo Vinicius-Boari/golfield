@@ -1293,7 +1293,6 @@ function AddRecordButton({
                 <Input
                   value={values[h] ?? ""}
                   onChange={(e) => setValues((v) => ({ ...v, [h]: e.target.value }))}
-                  placeholder={h}
                   className="h-9"
                 />
               </div>
@@ -1403,7 +1402,6 @@ function EditRecordButton({
                 <Input
                   value={values[h] ?? ""}
                   onChange={(e) => setValues((v) => ({ ...v, [h]: e.target.value }))}
-                  placeholder={h}
                   className="h-9"
                 />
               </div>
