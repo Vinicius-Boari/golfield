@@ -924,6 +924,8 @@ function DashboardContent({
         </div>
 
         <div className="flex flex-wrap items-center gap-2 mb-4 pt-2 border-t border-muted/30">
+          <AddRecordButton sheetTitle={sheetTitle} headers={headers} onAdded={refetch} />
+
           <Button
             size="sm"
             variant="outline"
@@ -979,8 +981,6 @@ function DashboardContent({
               )}
             </AnimatePresence>
           </div>
-
-          <AddRecordButton sheetTitle={sheetTitle} headers={headers} onAdded={refetch} />
 
           <Button
             size="sm"
