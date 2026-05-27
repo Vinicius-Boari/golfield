@@ -1042,6 +1042,14 @@ function DashboardContent({
                       transition={{ duration: 0.15, delay: idx * 0.01 }}
                       className="border-t hover:bg-muted/30 transition-colors"
                     >
+                        <td className="px-4 py-2.5 text-left whitespace-nowrap no-print">
+                          <EditRecordButton
+                            sheetTitle={sheetTitle}
+                            headers={headers}
+                            row={row}
+                            onSaved={refetch}
+                          />
+                        </td>
                         {headers.map((h) => {
                           const v = row[h] ?? "";
                           return (
@@ -1050,14 +1058,6 @@ function DashboardContent({
                             </td>
                           );
                         })}
-                        <td className="px-4 py-2.5 text-right whitespace-nowrap no-print">
-                          <EditRecordButton
-                            sheetTitle={sheetTitle}
-                            headers={headers}
-                            row={row}
-                            onSaved={refetch}
-                          />
-                        </td>
                     </motion.tr>
                   ))}
                 </AnimatePresence>
