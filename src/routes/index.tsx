@@ -398,10 +398,7 @@ function Sidebar({
           <div className="px-2 pb-3 text-xs text-muted-foreground line-clamp-2">
             {spreadsheetTitle ?? "Carregando…"}
           </div>
-          <div className="px-2 py-2 flex items-center justify-between">
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
-              Abas
-            </span>
+          <div className="px-2 py-2 flex items-center gap-2">
             <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
               <PopoverTrigger asChild>
                 <button
@@ -439,6 +436,9 @@ function Sidebar({
                 </div>
               </PopoverContent>
             </Popover>
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+              Abas
+            </span>
           </div>
           {visibleSheets.map((s) => {
             const active = s.title === current;
