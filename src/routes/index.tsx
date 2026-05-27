@@ -923,7 +923,7 @@ function DashboardContent({
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 mb-4 pt-2 border-t border-muted/30">
+        <div className="flex flex-wrap items-center justify-end gap-2 mb-4 pt-2 border-t border-muted/30">
           <AddRecordButton sheetTitle={sheetTitle} headers={headers} onAdded={refetch} />
 
           <Button
