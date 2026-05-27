@@ -1014,6 +1014,9 @@ function DashboardContent({
             <table className="w-full text-sm">
               <thead className="bg-muted/40">
                 <tr>
+                  <th className="text-left font-semibold text-xs uppercase tracking-wider text-muted-foreground px-4 py-3 whitespace-nowrap no-print">
+                    Ações
+                  </th>
                   {headers.map((h) => (
                     <th
                       key={h}
@@ -1026,9 +1029,6 @@ function DashboardContent({
                       </span>
                     </th>
                   ))}
-                  <th className="text-right font-semibold text-xs uppercase tracking-wider text-muted-foreground px-4 py-3 whitespace-nowrap no-print">
-                    Ações
-                  </th>
                 </tr>
               </thead>
               <tbody>
